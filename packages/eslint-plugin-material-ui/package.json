@@ -1,0 +1,15 @@
+{
+  "name": "eslint-plugin-material-ui",
+  "version": "1.0.0",
+  "private": "true",
+  "description": "Custom eslint rules for Material-UI",
+  "repository": "https://github.com/callemall/material-ui/packages/eslint-plugin-material-ui",
+  "main": "lib/index.js",
+  "scripts": {
+    "lint": "../../node_modules/eslint/bin/eslint.js --rulesdir ../.. --ext .js lib tests && echo \"eslint: no lint errors\""
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "license": "MIT"
+}
