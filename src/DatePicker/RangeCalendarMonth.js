@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {isBetweenDates, isEqualDate} from './dateUtils';
+import {dateBordersRange, isBetweenDates, isEqualDate} from './dateUtils';
 import DayButton from './DayButton';
 
 import {
@@ -92,6 +92,12 @@ class RangeCalendarMonth extends Component {
     return disabled;
   }
 
+  hasBlockedTime(day) {
+    const ranges = this.props.blockedDateTimeRanges;
+    if (day === null) return false;
+    return dateBordersRange(ranges, day);
+  }
+
   dateInRange(day) {
     const {
       end,
@@ -132,6 +138,7 @@ class RangeCalendarMonth extends Component {
       const disabled = this.shouldDisableDate(day);
       const selected = !disabled && isSameDate;
       const isBetweenDates = this.dateInRange(day);
+      const containsBlockedTime = this.hasBlockedTime(day);
 
       if (isSameDate) {
         this.selectedDateDisabled = disabled;
@@ -144,6 +151,7 @@ class RangeCalendarMonth extends Component {
           date={day}
           disabled={disabled}
           isBetweenDates={isBetweenDates}
+          containsBlockedTime={containsBlockedTime}
           isEndDate={isEndDate}
           isStartDate={isStartDate}
           key={`db${(i + j)}`}

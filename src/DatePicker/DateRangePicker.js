@@ -143,6 +143,10 @@ class DateRangePicker extends Component {
      */
     onShow: PropTypes.func,
     /**
+     * Shows the calendar date/time display. Defaults to false.
+     */
+    showCalendarDate: PropTypes.bool,
+    /**
      * This is the container for attributes and methods specific to the 'start' calendar.
      */
     start: PropTypes.shape({
@@ -391,9 +395,12 @@ class DateRangePicker extends Component {
     const {selectedStartDate, selectedEndDate, startDate, endDate} = this.state;
     const {hyphenNode} = this.props;
     const hyphen = (hyphenNode ? hyphenNode :
-      <SvgIcon viewBox="15335.779 -15077.597 23.25 10" style={{fill: '#474747', fillRule: 'evenodd', height: '16px'}}>
-        <path d="M5.25,4l-.875.875,3.5,3.5H-13v1.25H7.875l-3.5,3.5L5.25,14l5-5Z" transform="translate(15348.779 -15081.597)"/>
-      </SvgIcon>);
+      (<SvgIcon viewBox="15335.779 -15077.597 23.25 10" style={{fill: '#474747', fillRule: 'evenodd', height: '16px'}}>
+        <path
+          d="M5.25,4l-.875.875,3.5,3.5H-13v1.25H7.875l-3.5,3.5L5.25,14l5-5Z"
+          transform="translate(15348.779 -15081.597)"
+        />
+      </SvgIcon>));
     return (
       <div style={{display: 'flex', justifyContent: 'space-between', border: '1px solid #E5E5E5', padding: '10px'}}>
         {selectedStartDate &&
@@ -446,6 +453,7 @@ class DateRangePicker extends Component {
       onFocus, // eslint-disable-line no-unused-vars
       onShow,
       onClick, // eslint-disable-line no-unused-vars
+      showCalendarDate,
       start,
       style,
       textFieldStyle,
@@ -480,7 +488,7 @@ class DateRangePicker extends Component {
           initialStartDate={this.state.dialogStartDate}
           initialEndDate={this.state.dialogEndDate}
           locale={locale}
-          hideCalendarDate={true}
+          showCalendarDate={showCalendarDate}
           mode={mode}
           okLabel={okLabel}
           onAccept={this.handleAccept}

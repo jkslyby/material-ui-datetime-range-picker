@@ -5,7 +5,7 @@ import {isEqualDate} from './dateUtils';
 import EnhancedButton from '../internal/EnhancedButton';
 
 function getStyles(props, context, state) {
-  const {date, disabled, isBetweenDates, isEndDate, isStartDate, selected} = props;
+  const {containsBlockedTime, date, disabled, isBetweenDates, isEndDate, isStartDate, selected} = props;
   const {hover} = state;
   const {baseTheme, datePicker} = context.muiTheme;
 
@@ -32,7 +32,7 @@ function getStyles(props, context, state) {
       buttonStateLeft = 0;
       buttonStateWidth = 42;
     }
-  } else if (isEqualDate(date, new Date())) {
+  } else if (containsBlockedTime === true || isEqualDate(date, new Date())) {
     labelColor = datePicker.color;
   }
 
@@ -69,6 +69,7 @@ function getStyles(props, context, state) {
 class DayButton extends Component {
   static propTypes = {
     DateTimeFormat: PropTypes.func.isRequired,
+    containsBlockedTime: PropTypes.bool,
     date: PropTypes.object,
     disabled: PropTypes.bool,
     isBetweenDates: PropTypes.bool,
@@ -120,6 +121,7 @@ class DayButton extends Component {
 
   render() {
     const {
+      containsBlockedTime, // eslint-disable-line no-unused-vars
       DateTimeFormat,
       date,
       disabled,

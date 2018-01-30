@@ -29,7 +29,6 @@ class DateRangePickerDialog extends Component {
     containerStyle: PropTypes.object,
     end: PropTypes.object,
     firstDayOfWeek: PropTypes.number,
-    hideCalendarDate: PropTypes.bool,
     initialEndDate: PropTypes.object,
     initialStartDate: PropTypes.object,
     locale: PropTypes.string,
@@ -40,6 +39,7 @@ class DateRangePickerDialog extends Component {
     onShow: PropTypes.func,
     onUpdate: PropTypes.func,
     open: PropTypes.bool,
+    showCalendarDate: PropTypes.bool,
     start: PropTypes.object,
     style: PropTypes.object,
     utils: PropTypes.object,
@@ -360,7 +360,7 @@ class DateRangePickerDialog extends Component {
       cancelLabel,
       container,
       containerStyle,
-      hideCalendarDate,
+      showCalendarDate,
       initialStartDate, // eslint-disable-line no-unused-vars
       initialEndDate, // eslint-disable-line no-unused-vars
       firstDayOfWeek,
@@ -413,7 +413,7 @@ class DateRangePickerDialog extends Component {
             onKeyUp={this.handleWindowKeyUp}
           />
 
-          {!hideCalendarDate &&
+          {showCalendarDate &&
             <DateRangeDisplay
               DateTimeFormat={DateTimeFormat}
               disableYearSelection={true}
@@ -453,7 +453,6 @@ class DateRangePickerDialog extends Component {
             start={this.state.start}
             setSelectedDate={this.setSelectedDate.bind(this)}
             onMonthChange={this.handleMonthChange}
-            hideCalendarDate={hideCalendarDate}
             utils={utils}
           />
 

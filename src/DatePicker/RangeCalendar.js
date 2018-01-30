@@ -28,7 +28,6 @@ class RangeCalendar extends Component {
     edit: PropTypes.string.isRequired,
     end: PropTypes.object.isRequired,
     firstDayOfWeek: PropTypes.number,
-    hideCalendarDate: PropTypes.bool,
     initialDate: PropTypes.object,
     locale: PropTypes.string.isRequired,
     mode: PropTypes.oneOf(['portrait', 'landscape']),
@@ -173,7 +172,6 @@ class RangeCalendar extends Component {
 
   render() {
     const {prepareStyles} = this.context.muiTheme;
-    const {hideCalendarDate} = this.props;
     const toolbarInteractions = this.getToolbarInteractions();
     const isLandscape = this.props.mode === 'landscape';
     const {calendarTextColor} = this.context.muiTheme.datePicker;
@@ -182,7 +180,7 @@ class RangeCalendar extends Component {
       root: {
         color: calendarTextColor,
         userSelect: 'none',
-        width: (!hideCalendarDate && isLandscape) ? 479 : 310,
+        width: isLandscape ? 479 : 310,
       },
       calendar: {
         display: 'flex',

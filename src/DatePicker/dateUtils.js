@@ -163,6 +163,25 @@ export function isDateTimeBetweenDateTime(dateToCheck, startDate, endDate) {
   // return (!(date < start.getTime()) && !(date > end.getTime()));
 }
 
+export function doesDateBorderDateTime(dateToCheck, startDate, endDate) {
+  const date = new Date(dateToCheck.getTime());
+  const startOfStart = (new Date(startDate.getTime())).setHours(0, 0, 0, 0);
+  const endOfEnd = (new Date(endDate.getTime())).setHours(23, 59, 59, 999);
+  return (startOfStart <= date && date <= endOfEnd);
+}
+
+export function dateBordersRange(ranges, day) {
+  let bordersRange = false;
+  if (ranges) {
+    ranges.forEach((range) => {
+      if (doesDateBorderDateTime(day, range.start, range.end)) {
+        bordersRange = true;
+      }
+    });
+  }
+  return bordersRange;
+}
+
 export function isDateInRanges(ranges, day) {
   let inRange = false;
   if (ranges) {

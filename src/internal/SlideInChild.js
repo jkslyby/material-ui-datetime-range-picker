@@ -6,11 +6,15 @@ import transitions from '../styles/transitions';
 
 class SlideInChild extends Component {
   static propTypes = {
+    appear: PropTypes.func,
     children: PropTypes.node,
     direction: PropTypes.string,
+    enter: PropTypes.func,
     enterDelay: PropTypes.number,
+    exit: PropTypes.func,
     // This callback is needed bacause the direction could change when leaving the DOM
     getLeaveDirection: PropTypes.func.isRequired,
+    onExited: PropTypes.func,
     style: PropTypes.object,
   };
 
