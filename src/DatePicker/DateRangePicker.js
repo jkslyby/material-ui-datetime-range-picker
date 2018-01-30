@@ -85,6 +85,10 @@ class DateRangePicker extends Component {
       shouldDisableDate: PropTypes.func,
     }),
     /**
+     * Override the default text of the 'End' label.
+     */
+    endLabel: PropTypes.string,
+    /**
      * Used to change the first day of week. It varies from
      * Saturday to Monday between different locales.
      * The allowed range is 0 (Sunday) to 6 (Saturday).
@@ -100,9 +104,9 @@ class DateRangePicker extends Component {
      */
     formatDate: PropTypes.func,
     /**
-     * Replaces the default dashed arrow image with a custom one.
+     * Override the default display formatting.
      */
-    hyphenNode: PropTypes.node,
+    formatDisplay: PropTypes.func,
     /**
      * Locale used for formatting the `DatePicker` date strings. Other than for 'en-US', you
      * must provide a `DateTimeFormat` that supports the chosen `locale`.
@@ -143,6 +147,10 @@ class DateRangePicker extends Component {
      */
     onShow: PropTypes.func,
     /**
+     * Shows the calendar date/time display. Defaults to false.
+     */
+    showCalendarDate: PropTypes.bool,
+    /**
      * This is the container for attributes and methods specific to the 'start' calendar.
      */
     start: PropTypes.shape({
@@ -170,6 +178,10 @@ class DateRangePicker extends Component {
        */
       shouldDisableDate: PropTypes.func,
     }),
+    /**
+     * Override the default text of the 'Start' label.
+     */
+    startLabel: PropTypes.string,
     /**
      * Override the inline-styles of the root element.
      */
@@ -210,7 +222,9 @@ class DateRangePicker extends Component {
     autoOk: false,
     container: 'dialog',
     disabled: false,
+    endLabel: 'End',
     firstDayOfWeek: 1,
+    startLabel: 'Start',
     style: {},
     underlineShow: true,
   };
@@ -389,28 +403,32 @@ class DateRangePicker extends Component {
 
   formatDateRangeDisplay(dateFormatter) {
     const {selectedStartDate, selectedEndDate, startDate, endDate} = this.state;
-    const {hyphenNode} = this.props;
-    const hyphen = (hyphenNode ? hyphenNode :
-      <SvgIcon viewBox="15335.779 -15077.597 23.25 10" style={{fill: '#474747', fillRule: 'evenodd', height: '16px'}}>
-        <path d="M5.25,4l-.875.875,3.5,3.5H-13v1.25H7.875l-3.5,3.5L5.25,14l5-5Z" transform="translate(15348.779 -15081.597)"/>
-      </SvgIcon>);
-    return (
-      <div style={{display: 'flex', justifyContent: 'space-between', border: '1px solid #E5E5E5', padding: '10px'}}>
-        {selectedStartDate &&
-          <span>{this.formatDateForDisplay(selectedStartDate, dateFormatter, 'Pick-up')}</span>
-        }
-        {!selectedStartDate &&
-          <span>{this.formatDateForDisplay(startDate, dateFormatter, 'Pick-up')}</span>
-        }
-        {hyphen}
-        {selectedEndDate &&
-          <span>{this.formatDateForDisplay(selectedEndDate, dateFormatter, 'Drop-off')}</span>
-        }
-        {!selectedEndDate &&
-          <span>{this.formatDateForDisplay(endDate, dateFormatter, 'Drop-off')}</span>
-        }
-      </div>
-    );
+    const {endLabel, formatDisplay, startLabel} = this.props;
+
+    const start = (selectedStartDate ? selectedStartDate : startDate);
+    const end = (selectedEndDate ? selectedEndDate : endDate);
+    const formattedStart = this.formatDateForDisplay(start, dateFormatter, startLabel);
+    const formattedEnd = this.formatDateForDisplay(end, dateFormatter, endLabel);
+
+    if (formatDisplay) {
+      return formatDisplay(formattedStart, formattedEnd);
+    } else {
+      return (
+        <div style={{display: 'flex', justifyContent: 'space-between', border: '1px solid #E5E5E5', padding: '10px'}}>
+          <span>{formattedStart}</span>
+          <SvgIcon
+            viewBox="15335.779 -15077.597 23.25 10"
+            style={{fill: '#474747', fillRule: 'evenodd', height: '16px'}}
+          >
+            <path
+              d="M5.25,4l-.875.875,3.5,3.5H-13v1.25H7.875l-3.5,3.5L5.25,14l5-5Z"
+              transform="translate(15348.779 -15081.597)"
+            />
+          </SvgIcon>
+          <span>{formattedEnd}</span>
+        </div>
+      );
+    }
   }
 
   formatDate = (date) => {
@@ -436,9 +454,10 @@ class DateRangePicker extends Component {
       container,
       dialogContainerStyle,
       end,
+      endLabel, // eslint-disable-line no-unused-vars
       firstDayOfWeek,
       formatDate: formatDateProp,
-      hyphenNode, // eslint-disable-line no-unused-vars
+      formatDisplay, // eslint-disable-line no-unused-vars
       locale,
       mode,
       okLabel,
@@ -446,7 +465,9 @@ class DateRangePicker extends Component {
       onFocus, // eslint-disable-line no-unused-vars
       onShow,
       onClick, // eslint-disable-line no-unused-vars
+      showCalendarDate,
       start,
+      startLabel, // eslint-disable-line no-unused-vars
       style,
       textFieldStyle,
       underlineShow, // eslint-disable-line no-unused-vars
@@ -480,7 +501,7 @@ class DateRangePicker extends Component {
           initialStartDate={this.state.dialogStartDate}
           initialEndDate={this.state.dialogEndDate}
           locale={locale}
-          hideCalendarDate={true}
+          showCalendarDate={showCalendarDate}
           mode={mode}
           okLabel={okLabel}
           onAccept={this.handleAccept}
