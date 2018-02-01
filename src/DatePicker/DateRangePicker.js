@@ -85,6 +85,10 @@ class DateRangePicker extends Component {
       shouldDisableDate: PropTypes.func,
     }),
     /**
+     * Override the default text of the 'End' label.
+     */
+    endLabel: PropTypes.string,
+    /**
      * Used to change the first day of week. It varies from
      * Saturday to Monday between different locales.
      * The allowed range is 0 (Sunday) to 6 (Saturday).
@@ -100,9 +104,9 @@ class DateRangePicker extends Component {
      */
     formatDate: PropTypes.func,
     /**
-     * Replaces the default dashed arrow image with a custom one.
+     * Override the default display formatting.
      */
-    hyphenNode: PropTypes.node,
+    formatDisplay: PropTypes.func,
     /**
      * Locale used for formatting the `DatePicker` date strings. Other than for 'en-US', you
      * must provide a `DateTimeFormat` that supports the chosen `locale`.
@@ -175,6 +179,10 @@ class DateRangePicker extends Component {
       shouldDisableDate: PropTypes.func,
     }),
     /**
+     * Override the default text of the 'Start' label.
+     */
+    startLabel: PropTypes.string,
+    /**
      * Override the inline-styles of the root element.
      */
     style: PropTypes.object,
@@ -214,7 +222,9 @@ class DateRangePicker extends Component {
     autoOk: false,
     container: 'dialog',
     disabled: false,
+    endLabel: 'End',
     firstDayOfWeek: 1,
+    startLabel: 'Start',
     style: {},
     underlineShow: true,
   };
@@ -224,6 +234,7 @@ class DateRangePicker extends Component {
   };
 
   state = {
+    dialogVisible: false,
     startDate: undefined,
     endDate: undefined,
     selectedStartDate: undefined,
@@ -256,6 +267,15 @@ class DateRangePicker extends Component {
             endDate: newDates.end,
           });
         }
+      } else if (this.props.value && this.props.value.start && this.props.value.end &&
+          nextProps.value && !nextProps.value.start && !nextProps.value.end) {
+        this.setState({
+          dialogVisible: false,
+          startDate: undefined,
+          endDate: undefined,
+          selectedStartDate: undefined,
+          selectedEndDate: undefined,
+        });
       }
     }
   }
@@ -276,20 +296,22 @@ class DateRangePicker extends Component {
      * (get the current system date while doing so)
      * else set it to the currently selected date
      */
-    if (this.state.startDate !== undefined && this.state.endDate !== undefined) {
-      this.setState({
-        dialogStartDate: this.getDates().startDate,
-        dialogEndDate: this.getDates().endDate,
-        selectedStartDate: undefined,
-        selectedEndDate: undefined,
-      }, this.refs.dialogWindow.show);
-    } else {
-      this.setState({
-        dialogStartDate: new Date(),
-        dialogEndDate: new Date(),
-        selectedStartDate: undefined,
-        selectedEndDate: undefined,
-      }, this.refs.dialogWindow.show);
+    if (!this.state.dialogVisible) {
+      if (this.state.startDate !== undefined && this.state.endDate !== undefined) {
+        this.setState({
+          dialogStartDate: this.getDates().startDate,
+          dialogEndDate: this.getDates().endDate,
+          selectedStartDate: undefined,
+          selectedEndDate: undefined,
+        }, this.refs.dialogWindow.show);
+      } else {
+        this.setState({
+          dialogStartDate: new Date(),
+          dialogEndDate: new Date(),
+          selectedStartDate: undefined,
+          selectedEndDate: undefined,
+        }, this.refs.dialogWindow.show);
+      }
     }
   }
 
@@ -305,11 +327,15 @@ class DateRangePicker extends Component {
       this.setState({
         startDate: dates.start,
         endDate: dates.end,
+        dialogVisible: false,
       });
       if (this.props.onChange) {
         this.props.onChange(null, dates);
       }
     } else {
+      this.setState({
+        dialogVisible: false,
+      });
       if (this.props.onChange) {
         this.props.onChange(null, dates);
       }
@@ -323,10 +349,19 @@ class DateRangePicker extends Component {
     });
   };
 
+  handleShow = () => {
+    this.setState({
+      dialogVisible: true,
+    });
+    if (this.props.onShow)
+      this.props.onShow();
+  };
+
   handleDismiss = () => {
     this.setState({
       selectedStartDate: undefined,
       selectedEndDate: undefined,
+      dialogVisible: false,
     });
     if (this.props.onDismiss)
       this.props.onDismiss();
@@ -368,21 +403,35 @@ class DateRangePicker extends Component {
         return new Intl.DateTimeFormat(this.props.locale, {
           day: '2-digit',
           month: '2-digit',
+        }).format(date);
+      } else {
+        return new Intl.DateTimeFormat('en-US', {
+          day: '2-digit',
+          month: '2-digit',
+        }).format(date);
+      }
+    } else {
+      return label;
+    }
+  }
+
+  formatTimeForDisplay(date) {
+    if (date instanceof Date) {
+      if (this.props.locale) {
+        return new Intl.DateTimeFormat(this.props.locale, {
           hour: '2-digit',
           minute: '2-digit',
           hour12: true,
         }).format(date);
       } else {
         return new Intl.DateTimeFormat('en-US', {
-          day: '2-digit',
-          month: '2-digit',
           hour: '2-digit',
           minute: '2-digit',
           hour12: true,
         }).format(date);
       }
     } else {
-      return label;
+      return '';
     }
   }
 
@@ -393,31 +442,51 @@ class DateRangePicker extends Component {
 
   formatDateRangeDisplay(dateFormatter) {
     const {selectedStartDate, selectedEndDate, startDate, endDate} = this.state;
-    const {hyphenNode} = this.props;
-    const hyphen = (hyphenNode ? hyphenNode :
-      (<SvgIcon viewBox="15335.779 -15077.597 23.25 10" style={{fill: '#474747', fillRule: 'evenodd', height: '16px'}}>
-        <path
-          d="M5.25,4l-.875.875,3.5,3.5H-13v1.25H7.875l-3.5,3.5L5.25,14l5-5Z"
-          transform="translate(15348.779 -15081.597)"
-        />
-      </SvgIcon>));
-    return (
-      <div style={{display: 'flex', justifyContent: 'space-between', border: '1px solid #E5E5E5', padding: '10px'}}>
-        {selectedStartDate &&
-          <span>{this.formatDateForDisplay(selectedStartDate, dateFormatter, 'Pick-up')}</span>
-        }
-        {!selectedStartDate &&
-          <span>{this.formatDateForDisplay(startDate, dateFormatter, 'Pick-up')}</span>
-        }
-        {hyphen}
-        {selectedEndDate &&
-          <span>{this.formatDateForDisplay(selectedEndDate, dateFormatter, 'Drop-off')}</span>
-        }
-        {!selectedEndDate &&
-          <span>{this.formatDateForDisplay(endDate, dateFormatter, 'Drop-off')}</span>
-        }
-      </div>
+    const {endLabel, formatDisplay, startLabel} = this.props;
+
+    const start = (selectedStartDate ? selectedStartDate : startDate);
+    const end = (selectedEndDate ? selectedEndDate : endDate);
+    const formattedStartDate = this.formatDateForDisplay(start, dateFormatter, startLabel);
+    const formattedStartTime = this.formatTimeForDisplay(start, dateFormatter, startLabel);
+    const formattedEndDate = this.formatDateForDisplay(end, dateFormatter, endLabel);
+    const formattedEndTime = this.formatTimeForDisplay(end, dateFormatter, endLabel);
+    const startComponent = (
+      <span>
+        <span>{formattedStartDate}</span>
+        {formattedStartDate !== startLabel &&
+          <span style={{marginRight: '5px'}}>,</span>}
+        <span>{formattedStartTime}</span>
+      </span>
     );
+
+    const endComponent = (
+      <span>
+        <span>{formattedEndDate}</span>
+        {formattedEndDate !== endLabel &&
+          <span style={{marginRight: '5px'}}>,</span>}
+        <span>{formattedEndTime}</span>
+      </span>
+    );
+
+    if (formatDisplay) {
+      return formatDisplay(startComponent, endComponent);
+    } else {
+      return (
+        <div style={{display: 'flex', justifyContent: 'space-between', border: '1px solid #E5E5E5', padding: '10px'}}>
+          {startComponent}
+          <SvgIcon
+            viewBox="15335.779 -15077.597 23.25 10"
+            style={{fill: '#474747', fillRule: 'evenodd', height: '16px'}}
+          >
+            <path
+              d="M5.25,4l-.875.875,3.5,3.5H-13v1.25H7.875l-3.5,3.5L5.25,14l5-5Z"
+              transform="translate(15348.779 -15081.597)"
+            />
+          </SvgIcon>
+          {endComponent}
+        </div>
+      );
+    }
   }
 
   formatDate = (date) => {
@@ -443,18 +512,20 @@ class DateRangePicker extends Component {
       container,
       dialogContainerStyle,
       end,
+      endLabel, // eslint-disable-line no-unused-vars
       firstDayOfWeek,
       formatDate: formatDateProp,
-      hyphenNode, // eslint-disable-line no-unused-vars
+      formatDisplay, // eslint-disable-line no-unused-vars
       locale,
       mode,
       okLabel,
       onDismiss, // eslint-disable-line no-unused-vars
       onFocus, // eslint-disable-line no-unused-vars
-      onShow,
+      onShow, // eslint-disable-line no-unused-vars
       onClick, // eslint-disable-line no-unused-vars
       showCalendarDate,
       start,
+      startLabel, // eslint-disable-line no-unused-vars
       style,
       textFieldStyle,
       underlineShow, // eslint-disable-line no-unused-vars
@@ -464,7 +535,6 @@ class DateRangePicker extends Component {
 
     const {prepareStyles} = this.context.muiTheme;
     const formatDate = formatDateProp || this.formatDate;
-
     return (
       <div className={className} style={prepareStyles(Object.assign({}, style))}>
         <div
@@ -493,7 +563,7 @@ class DateRangePicker extends Component {
           okLabel={okLabel}
           onAccept={this.handleAccept}
           onUpdate={this.handleUpdate}
-          onShow={onShow}
+          onShow={this.handleShow}
           onDismiss={this.handleDismiss}
           ref="dialogWindow"
           start={start}

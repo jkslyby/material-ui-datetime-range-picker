@@ -27,6 +27,8 @@ class DateRangePickerDialog extends Component {
     cancelLabel: PropTypes.node,
     container: PropTypes.oneOf(['dialog', 'inline']),
     containerStyle: PropTypes.object,
+    displayTime: PropTypes.bool,
+    edit: PropTypes.string,
     end: PropTypes.object,
     firstDayOfWeek: PropTypes.number,
     initialEndDate: PropTypes.object,
@@ -333,8 +335,8 @@ class DateRangePickerDialog extends Component {
 
   handleTouchTapMenu = (edit, displayTime) => {
     this.setState({
-      edit: edit,
-      displayTime: displayTime,
+      edit: (edit ? edit : this.props.edit),
+      displayTime: (displayTime ? displayTime : this.props.displayTime),
     });
   }
 
@@ -360,6 +362,8 @@ class DateRangePickerDialog extends Component {
       cancelLabel,
       container,
       containerStyle,
+      displayTime, // eslint-disable-line no-unused-vars
+      edit, // eslint-disable-line no-unused-vars
       showCalendarDate,
       initialStartDate, // eslint-disable-line no-unused-vars
       initialEndDate, // eslint-disable-line no-unused-vars
