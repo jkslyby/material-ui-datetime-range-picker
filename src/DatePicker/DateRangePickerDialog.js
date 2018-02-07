@@ -272,10 +272,18 @@ class DateRangePickerDialog extends Component {
 
   dismiss = () => {
     if (this.props.onDismiss && this.state.open) {
-      this.props.onDismiss({
-        start: this.state.start.selectedDate,
-        end: this.state.end.selectedDate,
-      });
+      if (this.state.start.selectedDate && this.state.end.selectedDate &&
+          !isEqualDateTime(this.state.start.selectedDate, this.state.end.selectedDate)) {
+        this.props.onDismiss({
+          start: this.state.start.selectedDate,
+          end: this.state.end.selectedDate,
+        });
+      } else {
+        this.props.onDismiss({
+          start: null,
+          end: null,
+        });
+      }
     }
     this.setState({
       edit: 'start',
