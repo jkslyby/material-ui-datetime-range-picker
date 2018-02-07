@@ -136,6 +136,10 @@ class DateRangePicker extends Component {
     onClick: PropTypes.func,
     /**
      * Callback function that is fired when the Date Picker's dialog is dismissed.
+     *
+     * @param {null} null Since there is no particular event associated with the dismiss,
+     * the first argument will always be null.
+     * @param {object} date The new date or null dates.
      */
     onDismiss: PropTypes.func,
     /**
@@ -150,6 +154,10 @@ class DateRangePicker extends Component {
      * Shows the calendar date/time display. Defaults to false.
      */
     showCalendarDate: PropTypes.bool,
+    /**
+     * Shows the current step in the date/time selection. Defaults to false.
+     */
+    showCalendarStatus: PropTypes.bool,
     /**
      * This is the container for attributes and methods specific to the 'start' calendar.
      */
@@ -357,14 +365,14 @@ class DateRangePicker extends Component {
       this.props.onShow();
   };
 
-  handleDismiss = () => {
+  handleDismiss = (dates) => {
     this.setState({
       selectedStartDate: undefined,
       selectedEndDate: undefined,
       dialogVisible: false,
     });
     if (this.props.onDismiss)
-      this.props.onDismiss();
+      this.props.onDismiss(null, dates);
   };
 
   handleFocus = (event) => {
@@ -512,7 +520,7 @@ class DateRangePicker extends Component {
       container,
       dialogContainerStyle,
       end,
-      endLabel, // eslint-disable-line no-unused-vars
+      endLabel,
       firstDayOfWeek,
       formatDate: formatDateProp,
       formatDisplay, // eslint-disable-line no-unused-vars
@@ -524,8 +532,9 @@ class DateRangePicker extends Component {
       onShow, // eslint-disable-line no-unused-vars
       onClick, // eslint-disable-line no-unused-vars
       showCalendarDate,
+      showCalendarStatus,
       start,
-      startLabel, // eslint-disable-line no-unused-vars
+      startLabel,
       style,
       textFieldStyle,
       underlineShow, // eslint-disable-line no-unused-vars
@@ -554,11 +563,13 @@ class DateRangePicker extends Component {
           container={container}
           containerStyle={dialogContainerStyle}
           end={end}
+          endLabel={endLabel}
           firstDayOfWeek={firstDayOfWeek}
           initialStartDate={this.state.dialogStartDate}
           initialEndDate={this.state.dialogEndDate}
           locale={locale}
           showCalendarDate={showCalendarDate}
+          showCalendarStatus={showCalendarStatus}
           mode={mode}
           okLabel={okLabel}
           onAccept={this.handleAccept}
@@ -567,6 +578,7 @@ class DateRangePicker extends Component {
           onDismiss={this.handleDismiss}
           ref="dialogWindow"
           start={start}
+          startLabel={startLabel}
           utils={utils}
         />
       </div>

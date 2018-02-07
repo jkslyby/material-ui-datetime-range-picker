@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import EventListener from 'react-event-listener';
 import keycode from 'keycode';
 import DateRangeDisplay from './DateRangeDisplay';
+import DateRangeStatusDisplay from './DateRangeStatusDisplay';
 import RangeCalendar from './RangeCalendar';
 import {Dialog} from 'material-ui';
 import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
@@ -15,6 +16,7 @@ import {
   isAfterDate,
   isBeforeDate,
   isBeforeDateTime,
+  isEqualDateTime,
   closestRangeAfterStart,
 } from './dateUtils';
 
@@ -30,6 +32,7 @@ class DateRangePickerDialog extends Component {
     displayTime: PropTypes.bool,
     edit: PropTypes.string,
     end: PropTypes.object,
+    endLabel: PropTypes.string,
     firstDayOfWeek: PropTypes.number,
     initialEndDate: PropTypes.object,
     initialStartDate: PropTypes.object,
@@ -42,7 +45,9 @@ class DateRangePickerDialog extends Component {
     onUpdate: PropTypes.func,
     open: PropTypes.bool,
     showCalendarDate: PropTypes.bool,
+    showCalendarStatus: PropTypes.bool,
     start: PropTypes.object,
+    startLabel: PropTypes.string,
     style: PropTypes.object,
     utils: PropTypes.object,
   };
@@ -143,6 +148,8 @@ class DateRangePickerDialog extends Component {
 
   setDisplayDate(date, newSelectedDate) {
     const newDisplayDate = this.props.utils.getFirstDayOfMonth(date);
+    const newSelectedEndDate = cloneDate(newSelectedDate);
+    newSelectedEndDate.setTime(newSelectedEndDate.getTime() + 1 * 60 * 60 * 1000);
 
     if (newDisplayDate !== this.state[this.state.edit].displayDate) {
       const nextDirection = this.context.muiTheme.isRtl ? 'right' : 'left';
@@ -156,12 +163,12 @@ class DateRangePickerDialog extends Component {
         },
       });
       if (this.state.edit === 'start' && (isAfterDate(newSelectedDate, this.state.end.selectedDate) ||
-                this.blockedRangeOverlaps(newSelectedDate))) {
+        isEqualDateTime(newSelectedDate, this.state.end.selectedDate) || this.blockedRangeOverlaps(newSelectedDate))) {
         newState = update(newState, {
           end: {
             displayDate: {$set: newDisplayDate},
             transitionDirection: {$set: direction},
-            selectedDate: {$set: newSelectedDate || this.state[this.state.edit].selectedDate},
+            selectedDate: {$set: newSelectedEndDate || this.state[this.state.edit].selectedDate},
           },
         });
       }
@@ -192,6 +199,9 @@ class DateRangePickerDialog extends Component {
       adjustedDate = new Date(start.selectedDate.getTime());
     }
 
+    const adjustedEndDate = cloneDate(adjustedDate);
+    adjustedEndDate.setTime(adjustedEndDate.getTime() + 1 * 60 * 60 * 1000);
+
     const newDisplayDate = this.props.utils.getFirstDayOfMonth(adjustedDate);
     if (newDisplayDate !== this.state[this.state.edit].displayDate) {
       newState = this.setDisplayDate(newDisplayDate, adjustedDate);
@@ -202,10 +212,10 @@ class DateRangePickerDialog extends Component {
         },
       });
       if (this.state.edit === 'start' && (isAfterDate(adjustedDate, this.state.end.selectedDate) ||
-        this.blockedRangeOverlaps(adjustedDate))) {
+        isEqualDateTime(adjustedDate, this.state.end.selectedDate) || this.blockedRangeOverlaps(adjustedDate))) {
         newState = update(newState, {
           end: {
-            selectedDate: {$set: adjustedDate},
+            selectedDate: {$set: adjustedEndDate},
           },
         });
       }
@@ -220,6 +230,9 @@ class DateRangePickerDialog extends Component {
     const mode = (this.state.edit === 'start' ? 'end' : 'start');
     const adjustedDate = cloneDate(this.state[this.state.edit].selectedDate);
     adjustedDate.setHours(hour, 0, 0, 0);
+    const adjustedEndDate = cloneDate(adjustedDate);
+    adjustedEndDate.setTime(adjustedEndDate.getTime() + 1 * 60 * 60 * 1000);
+
     let newState = update(this.state, {
       displayTime: {$set: false},
       edit: {$set: mode},
@@ -231,7 +244,7 @@ class DateRangePickerDialog extends Component {
     if (this.state.edit === 'start' && adjustedDate > this.state.end.selectedDate) {
       newState = update(newState, {
         end: {
-          selectedDate: {$set: adjustedDate},
+          selectedDate: {$set: adjustedEndDate},
         },
       });
     }
@@ -259,7 +272,10 @@ class DateRangePickerDialog extends Component {
 
   dismiss = () => {
     if (this.props.onDismiss && this.state.open) {
-      this.props.onDismiss();
+      this.props.onDismiss({
+        start: this.state.start.selectedDate,
+        end: this.state.end.selectedDate,
+      });
     }
     this.setState({
       edit: 'start',
@@ -364,7 +380,9 @@ class DateRangePickerDialog extends Component {
       containerStyle,
       displayTime, // eslint-disable-line no-unused-vars
       edit, // eslint-disable-line no-unused-vars
+      endLabel,
       showCalendarDate,
+      showCalendarStatus,
       initialStartDate, // eslint-disable-line no-unused-vars
       initialEndDate, // eslint-disable-line no-unused-vars
       firstDayOfWeek,
@@ -375,6 +393,7 @@ class DateRangePickerDialog extends Component {
       onUpdate, // eslint-disable-line no-unused-vars
       onDismiss, // eslint-disable-line no-unused-vars
       onShow, // eslint-disable-line no-unused-vars
+      startLabel,
       style, // eslint-disable-line no-unused-vars
       animation,
       utils,
@@ -431,6 +450,16 @@ class DateRangePickerDialog extends Component {
               end={this.state.end}
               edit={this.state.edit}
               start={this.state.start}
+            />
+          }
+
+          {showCalendarStatus &&
+            <DateRangeStatusDisplay
+              displayTime={this.state.displayTime}
+              edit={this.state.edit}
+              endLabel={endLabel}
+              mode={this.props.mode}
+              startLabel={startLabel}
             />
           }
 
