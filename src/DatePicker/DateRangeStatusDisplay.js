@@ -64,20 +64,20 @@ class DateRangeStatusDisplay extends Component {
 
         <div style={styles.text}>
           {edit === 'start' &&
-            <span style={{marginRight: '5px', textTransform: 'capitalize'}}>
+            <span style={{marginRight: '5px', textTransform: 'capitalize', fontWeight: 'bold'}}>
               {(startLabel ? startLabel : 'pick up')}
             </span>
           }
           {edit === 'end' &&
-            <span style={{marginRight: '5px', textTransform: 'capitalize'}}>
+            <span style={{marginRight: '5px', textTransform: 'capitalize', fontWeight: 'bold'}}>
               {(endLabel ? endLabel : 'drop off')}
             </span>
           }
           {!displayTime &&
-            <span>Date</span>
+            <span style={{fontWeight: 'bold'}}>Date</span>
           }
           {displayTime &&
-            <span>Time</span>
+            <span style={{fontWeight: 'bold'}}>Time</span>
           }
         </div>
 
