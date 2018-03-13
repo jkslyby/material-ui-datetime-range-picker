@@ -450,7 +450,15 @@ class DateRangePicker extends Component {
 
   formatDateRangeDisplay(dateFormatter) {
     const {selectedStartDate, selectedEndDate, startDate, endDate} = this.state;
-    const {endLabel, formatDisplay, startLabel} = this.props;
+    const {endLabel, formatDisplay, startLabel, textFieldStyle} = this.props;
+    const defaultTextFieldStyle = {
+      display: 'flex',
+      justifyContent: 'space-between',
+      border: '1px solid #E5E5E5',
+      padding: '0px 10px',
+      alignItems: 'center',
+      height: '50px',
+    };
 
     const start = (selectedStartDate ? selectedStartDate : startDate);
     const end = (selectedEndDate ? selectedEndDate : endDate);
@@ -480,7 +488,7 @@ class DateRangePicker extends Component {
       return formatDisplay(startComponent, endComponent);
     } else {
       return (
-        <div style={{display: 'flex', justifyContent: 'space-between', border: '1px solid #E5E5E5', padding: '10px'}}>
+        <div style={Object.assign({}, defaultTextFieldStyle, textFieldStyle)}>
           {startComponent}
           <SvgIcon
             viewBox="15335.779 -15077.597 23.25 10"
@@ -536,7 +544,7 @@ class DateRangePicker extends Component {
       start,
       startLabel,
       style,
-      textFieldStyle,
+      textFieldStyle, // eslint-disable-line no-unused-vars
       underlineShow, // eslint-disable-line no-unused-vars
       utils,
       ...other
@@ -551,7 +559,6 @@ class DateRangePicker extends Component {
           onFocus={this.handleFocus}
           onClick={this.handleTouchTap}
           ref="inputdaterangepicker"
-          style={textFieldStyle}
         >
           {this.formatDateRangeDisplay(formatDate)}
         </div>
