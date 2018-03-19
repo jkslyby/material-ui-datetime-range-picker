@@ -110,7 +110,9 @@ class RangeCalendarMonth extends Component {
   }
 
   getWeekElements() {
-    const weekArray = this.props.utils.getWeekArray(this.props[this.props.edit].displayDate, this.props.firstDayOfWeek);
+    const {edit, start} = this.props;
+    const weekArray = this.props.utils.getWeekArray((this.props[edit].displayDate ?
+      this.props[edit].displayDate : start.displayDate), this.props.firstDayOfWeek);
 
     return weekArray.map((week, i) => {
       return (
@@ -133,7 +135,8 @@ class RangeCalendarMonth extends Component {
 
     return week.map((day, j) => {
       const isStartDate = isEqualDate(this.props.start.selectedDate, day);
-      const isEndDate = isEqualDate(this.props.end.selectedDate, day);
+      const isEndDate = (isEqualDate(this.props.end.selectedDate, day) ||
+        (isStartDate && !this.props.end.selectedDate));
       const isSameDate = (isStartDate || isEndDate);
       const disabled = this.shouldDisableDate(day);
       const selected = !disabled && isSameDate;
@@ -143,7 +146,6 @@ class RangeCalendarMonth extends Component {
       if (isSameDate) {
         this.selectedDateDisabled = disabled;
       }
-
       return (
         <DayButton
           DateTimeFormat={DateTimeFormat}
