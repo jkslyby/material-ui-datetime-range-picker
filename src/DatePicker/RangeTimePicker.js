@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {MenuItem} from 'material-ui';
+import ReactDOM from 'react-dom';
 
 import {
   cloneDate,
@@ -94,7 +95,7 @@ class RangeTimePicker extends Component {
 
     return hourArray.map((hour, i) => {
       return (
-        <div key={i} style={styles.hour}>
+        <div ref={`hour${hour}`} key={i} style={styles.hour}>
           {this.getHourElement(hour)}
         </div>
       );
@@ -124,6 +125,12 @@ class RangeTimePicker extends Component {
 
   render() {
     const styles = this.getStyles();
+    setTimeout(() => {
+      const hour = ReactDOM.findDOMNode(this.refs.hour12);
+      if (hour) {
+        hour.scrollIntoView(true);
+      }
+    }, 0);
     return (
       <div style={styles.root}>
         {this.hasBlockedTime() &&
