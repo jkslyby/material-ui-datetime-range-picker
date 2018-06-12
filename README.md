@@ -64,10 +64,14 @@ This is still a work in progress so use it at your own risk. I've added some bas
 
     Example:
       The `selection` will be an object with start and end attributes that will either be a datetime value or falsey (undefined/null).
-<code>  {
+</pre>
+```javascript
+  {
     start: Wed Jun 13 2018 12:00:00 GMT-0600 (MDT),
     end: undefined
-  }</code>
+  }
+```
+  <pre>
       <strong>Note that if a date is not given it will be either undefined or null (falsey value).</strong>
 
   <strong>onDismiss(e, selection):</strong>
@@ -78,11 +82,14 @@ This is still a work in progress so use it at your own risk. I've added some bas
 
     Example:
       The `selection` will be an object with start and end attributes that will either be a datetime value or falsey (undefined/null).
-
-<code>  {
+</pre>
+```javascript
+  {
     start: null,
     end: null
-  }</code>
+  }
+```
+  <pre>
       <strong>Note that if a date is not given it will be either undefined or null (falsey value).</strong>
 
   <strong>showCalendarStatus:</strong>
@@ -163,12 +170,14 @@ This is still a work in progress so use it at your own risk. I've added some bas
       Object - The default value for the date/time range picker
 
     Example:
-
-<code>  {
+</pre>
+```javascript
+  {
     start: Wed Jun 13 2018 12:00:00 GMT-0600 (MDT),
     end: Wed Jun 14 2018 12:00:00 GMT-0600 (MDT)
-  }</code>
-</pre>
+  }
+  ```
+  <pre>
 
 ## Contributions:
 
