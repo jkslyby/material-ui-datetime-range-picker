@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {isBetweenDates, isEqualDate} from './dateUtils';
+import {dateBordersRange, isBetweenDates, isEqualDate} from './dateUtils';
 import DayButton from './DayButton';
 
 import {
@@ -36,6 +36,8 @@ class RangeCalendarMonth extends Component {
     DateTimeFormat: PropTypes.func.isRequired,
     autoOk: PropTypes.bool,
     blockedDateTimeRanges: PropTypes.array,
+    calendarDateWidth: PropTypes.string,
+    dayButtonSize: PropTypes.string,
     displayDate: PropTypes.object.isRequired,
     edit: PropTypes.string.isRequired,
     end: PropTypes.object.isRequired,
@@ -92,6 +94,12 @@ class RangeCalendarMonth extends Component {
     return disabled;
   }
 
+  hasBlockedTime(day) {
+    const ranges = this.props.blockedDateTimeRanges;
+    if (day === null) return false;
+    return dateBordersRange(ranges, day);
+  }
+
   dateInRange(day) {
     const {
       end,
@@ -104,7 +112,9 @@ class RangeCalendarMonth extends Component {
   }
 
   getWeekElements() {
-    const weekArray = this.props.utils.getWeekArray(this.props[this.props.edit].displayDate, this.props.firstDayOfWeek);
+    const {edit, start} = this.props;
+    const weekArray = this.props.utils.getWeekArray((this.props[edit].displayDate ?
+      this.props[edit].displayDate : start.displayDate), this.props.firstDayOfWeek);
 
     return weekArray.map((week, i) => {
       return (
@@ -119,6 +129,8 @@ class RangeCalendarMonth extends Component {
     const {
       DateTimeFormat,
       blockedDateTimeRanges, // eslint-disable-line no-unused-vars
+      calendarDateWidth,
+      dayButtonSize,
       edit, // eslint-disable-line no-unused-vars
       end, // eslint-disable-line no-unused-vars
       locale,
@@ -127,23 +139,27 @@ class RangeCalendarMonth extends Component {
 
     return week.map((day, j) => {
       const isStartDate = isEqualDate(this.props.start.selectedDate, day);
-      const isEndDate = isEqualDate(this.props.end.selectedDate, day);
+      const isEndDate = (isEqualDate(this.props.end.selectedDate, day) ||
+        (isStartDate && !this.props.end.selectedDate));
       const isSameDate = (isStartDate || isEndDate);
       const disabled = this.shouldDisableDate(day);
       const selected = !disabled && isSameDate;
       const isBetweenDates = this.dateInRange(day);
+      const containsBlockedTime = this.hasBlockedTime(day);
 
       if (isSameDate) {
         this.selectedDateDisabled = disabled;
       }
-
       return (
         <DayButton
           DateTimeFormat={DateTimeFormat}
           locale={locale}
+          calendarDateWidth={calendarDateWidth}
           date={day}
+          dayButtonSize={dayButtonSize}
           disabled={disabled}
           isBetweenDates={isBetweenDates}
+          containsBlockedTime={containsBlockedTime}
           isEndDate={isEndDate}
           isStartDate={isStartDate}
           key={`db${(i + j)}`}

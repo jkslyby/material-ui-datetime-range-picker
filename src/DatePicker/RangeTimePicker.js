@@ -1,34 +1,17 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {MenuItem} from 'material-ui';
+import ReactDOM from 'react-dom';
 
 import {
   cloneDate,
   closestRangeAfterStart,
+  dateBordersRange,
   isAfterDateTime,
   isBeforeDateTime,
   isDateTimeInRanges,
   isEqualDateTime,
 } from './dateUtils';
-
-const styles = {
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    fontWeight: 400,
-    height: 228,
-    lineHeight: 2,
-    position: 'relative',
-    textAlign: 'center',
-    MozPaddingStart: 0,
-    overflowY: 'scroll',
-  },
-  hour: {
-    height: 34,
-    marginBottom: 2,
-  },
-};
 
 class RangeTimePicker extends Component {
   static propTypes = {
@@ -40,6 +23,38 @@ class RangeTimePicker extends Component {
     start: PropTypes.object.isRequired,
     utils: PropTypes.object.isRequired,
   };
+
+  static contextTypes = {
+    muiTheme: PropTypes.object.isRequired,
+  };
+
+  getStyles() {
+    const {datePicker} = this.context.muiTheme;
+    return {
+      root: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        fontWeight: 400,
+        height: 228,
+        lineHeight: 2,
+        position: 'relative',
+        textAlign: 'center',
+        MozPaddingStart: 0,
+        overflowY: 'scroll',
+      },
+      hour: {
+        height: 34,
+        marginBottom: 2,
+      },
+      blockedTimeMessage: {
+        color: datePicker.color,
+        fontWeight: 'bold',
+        height: 48,
+        lineHeight: 3,
+      },
+    };
+  }
 
   shouldDisableTime(hour) {
     const {blockedDateTimeRanges, edit, start} = this.props;
@@ -64,7 +79,14 @@ class RangeTimePicker extends Component {
     }
   }
 
-  getTimeElements() {
+  hasBlockedTime() {
+    const {blockedDateTimeRanges, edit} = this.props;
+    const selectedDate = this.props[edit].selectedDate;
+    if (selectedDate === null) return false;
+    return dateBordersRange(blockedDateTimeRanges, selectedDate);
+  }
+
+  getTimeElements(styles) {
     const hourArray = [];
     const hoursInDay = 24;
     for (let i = 0; i < hoursInDay; i++) {
@@ -73,7 +95,7 @@ class RangeTimePicker extends Component {
 
     return hourArray.map((hour, i) => {
       return (
-        <div key={i} style={styles.hour}>
+        <div ref={`hour${hour}`} key={i} style={styles.hour}>
           {this.getHourElement(hour)}
         </div>
       );
@@ -102,9 +124,18 @@ class RangeTimePicker extends Component {
   }
 
   render() {
+    const styles = this.getStyles();
+    setTimeout(() => {
+      const hour = ReactDOM.findDOMNode(this.refs.hour12);
+      if (hour) {
+        hour.scrollIntoView(true);
+      }
+    }, 0);
     return (
       <div style={styles.root}>
-        {this.getTimeElements()}
+        {this.hasBlockedTime() &&
+          <div style={styles.blockedTimeMessage}>This day contains other reservations</div>}
+        {this.getTimeElements(styles)}
       </div>
     );
   }

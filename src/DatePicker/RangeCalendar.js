@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import EventListener from 'react-event-listener';
 import keycode from 'keycode';
 import transitions from '../styles/transitions';
-import RangeCalendarActionButtons from './RangeCalendarActionButtons';
 import RangeCalendarMonth from './RangeCalendarMonth';
 import CalendarToolbar from './CalendarToolbar';
 import RangeTimePicker from './RangeTimePicker';
 import SlideInTransitionGroup from '../internal/SlideIn';
+import parseNum from 'parse-num';
 
 import {
   defaultUtils,
@@ -22,13 +22,15 @@ class RangeCalendar extends Component {
     DateTimeFormat: PropTypes.func.isRequired,
     autoOk: PropTypes.bool,
     blockedDateTimeRanges: PropTypes.array,
+    calendarDateWidth: PropTypes.string,
+    calendarTimeWidth: PropTypes.string,
     cancelLabel: PropTypes.node,
+    dayButtonSize: PropTypes.string,
     disableYearSelection: PropTypes.bool,
     displayTime: PropTypes.bool,
     edit: PropTypes.string.isRequired,
     end: PropTypes.object.isRequired,
     firstDayOfWeek: PropTypes.number,
-    hideCalendarDate: PropTypes.bool,
     initialDate: PropTypes.object,
     locale: PropTypes.string.isRequired,
     mode: PropTypes.oneOf(['portrait', 'landscape']),
@@ -56,31 +58,6 @@ class RangeCalendar extends Component {
   static contextTypes = {
     muiTheme: PropTypes.object.isRequired,
   };
-
-  // componentWillMount() {
-  //   this.setState({
-  //     end: {
-  //       displayDate: this.props.utils.getFirstDayOfMonth(this.props.initialDate),
-  //       selectedDate: this.props.initialDate,
-  //     },
-  //     start: {
-  //       displayDate: this.props.utils.getFirstDayOfMonth(this.props.initialDate),
-  //       selectedDate: this.props.initialDate,
-  //     }
-  //   });
-  // }
-
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.initialDate !== this.props.initialDate) {
-  //     const date = nextProps.initialDate || new Date();
-  //     this.setState({
-  //       [nextProps.edit]: {
-  //         displayDate: this.props.utils.getFirstDayOfMonth(date),
-  //         selectedDate: date,
-  //       },
-  //     });
-  //   }
-  // }
 
   calendarRefs = {};
 
@@ -117,10 +94,18 @@ class RangeCalendar extends Component {
   }
 
   getToolbarInteractions() {
-    return {
-      prevMonth: this.props.utils.monthDiff(this.props[this.props.edit].displayDate, this.getMinDate()) > 0,
-      nextMonth: this.props.utils.monthDiff(this.props[this.props.edit].displayDate, this.getMaxDate()) < 0,
-    };
+    const {edit, end, start} = this.props;
+    if (edit === 'end' && !end.displayDate) {
+      return {
+        prevMonth: this.props.utils.monthDiff(start.displayDate, this.getMinDate()) > 0,
+        nextMonth: this.props.utils.monthDiff(start.displayDate, this.getMaxDate()) < 0,
+      };
+    } else {
+      return {
+        prevMonth: this.props.utils.monthDiff(this.props[this.props.edit].displayDate, this.getMinDate()) > 0,
+        nextMonth: this.props.utils.monthDiff(this.props[this.props.edit].displayDate, this.getMaxDate()) < 0,
+      };
+    }
   }
 
   handleWindowKeyDown = (event) => {
@@ -173,16 +158,36 @@ class RangeCalendar extends Component {
 
   render() {
     const {prepareStyles} = this.context.muiTheme;
-    const {hideCalendarDate} = this.props;
     const toolbarInteractions = this.getToolbarInteractions();
-    const isLandscape = this.props.mode === 'landscape';
     const {calendarTextColor} = this.context.muiTheme.datePicker;
+    const {
+      blockedDateTimeRanges,
+      calendarDateWidth,
+      calendarTimeWidth,
+      cancelLabel, // eslint-disable-line no-unused-vars
+      DateTimeFormat,
+      dayButtonSize,
+      displayTime,
+      edit,
+      end,
+      firstDayOfWeek,
+      locale,
+      okLabel, // eslint-disable-line no-unused-vars
+      onTouchTapCancel, // eslint-disable-line no-unused-vars
+      onTouchTapOk, // eslint-disable-line no-unused-vars
+      start,
+      utils,
+    } = this.props;
+
+    const width = (displayTime ? (calendarTimeWidth || '125px') : (calendarDateWidth || '310px'));
+    const buttonStateSize = parseNum(dayButtonSize || '34px');
+    const unit = (dayButtonSize || 'px').replace(/[0-9.]/g, '');
 
     const styles = {
       root: {
         color: calendarTextColor,
         userSelect: 'none',
-        width: (!hideCalendarDate && isLandscape) ? 479 : 310,
+        width: width,
       },
       calendar: {
         display: 'flex',
@@ -195,7 +200,7 @@ class RangeCalendar extends Component {
         flexDirection: 'column',
         fontSize: 12,
         fontWeight: 400,
-        padding: '0px 8px',
+        padding: `0px ${buttonStateSize / 4}${unit}`,
         transition: transitions.easeOut(),
       },
       yearContainer: {
@@ -205,7 +210,7 @@ class RangeCalendar extends Component {
         height: 272,
         marginTop: 10,
         overflow: 'hidden',
-        width: 310,
+        width: (calendarDateWidth || '310px'),
       },
       weekTitle: {
         display: 'flex',
@@ -218,7 +223,8 @@ class RangeCalendar extends Component {
         textAlign: 'center',
       },
       weekTitleDay: {
-        width: 42,
+        margin: 'auto',
+        minWidth: dayButtonSize || '34px',
       },
       transitionSlide: {
         height: 214,
@@ -227,61 +233,6 @@ class RangeCalendar extends Component {
 
     const weekTitleDayStyle = prepareStyles(styles.weekTitleDay);
 
-    const {
-      blockedDateTimeRanges,
-      cancelLabel,
-      DateTimeFormat,
-      displayTime,
-      edit,
-      end,
-      firstDayOfWeek,
-      locale,
-      okLabel,
-      onTouchTapCancel, // eslint-disable-line no-unused-vars
-      onTouchTapOk, // eslint-disable-line no-unused-vars
-      start,
-      utils,
-    } = this.props;
-
-
-    /*
-    <div style={prepareStyles(styles.calendarContainer)}>
-      <CalendarToolbar
-        DateTimeFormat={DateTimeFormat}
-        locale={locale}
-        displayDate={this.props[this.props.edit].displayDate}
-        onMonthChange={this.props.handleMonthChange}
-        prevMonth={toolbarInteractions.prevMonth}
-        nextMonth={toolbarInteractions.nextMonth}
-      />
-      <div style={prepareStyles(styles.weekTitle)}>
-        {daysArray.map((event, i) => (
-          <span key={i} style={weekTitleDayStyle}>
-            {localizedWeekday(DateTimeFormat, locale, i, firstDayOfWeek)}
-          </span>
-        ))}
-      </div>
-      <SlideInTransitionGroup direction={this.props[this.props.edit].transitionDirection}
-          style={styles.transitionSlide}>
-        <RangeCalendarMonth
-          blockedDateTimeRanges={blockedDateTimeRanges}
-          DateTimeFormat={DateTimeFormat}
-          edit={this.props.edit}
-          end={this.props.end}
-          displayDate={this.props[this.props.edit].displayDate}
-          firstDayOfWeek={this.props.firstDayOfWeek}
-          key={this.props[this.props.edit].displayDate.toDateString()}
-          locale={locale}
-          onTouchTapDay={this.props.onTouchTapDay.bind(this)}
-          ref={(ref) => this.calendarRefs.calendar = ref}
-          start={this.props.start}
-          utils={utils}
-        />
-      </SlideInTransitionGroup>
-    </div>
-    */
-
-
     return (
       <div style={prepareStyles(styles.root)}>
         <EventListener
@@ -289,13 +240,12 @@ class RangeCalendar extends Component {
           onKeyDown={this.handleWindowKeyDown}
         />
         <div style={prepareStyles(styles.calendar)}>
-
           {!displayTime &&
             <div style={prepareStyles(styles.calendarContainer)}>
               <CalendarToolbar
                 DateTimeFormat={DateTimeFormat}
                 locale={locale}
-                displayDate={this.props[edit].displayDate}
+                displayDate={(this.props[edit].displayDate ? this.props[edit].displayDate : start.displayDate)}
                 onMonthChange={this.props.onMonthChange}
                 prevMonth={toolbarInteractions.prevMonth}
                 nextMonth={toolbarInteractions.nextMonth}
@@ -311,11 +261,14 @@ class RangeCalendar extends Component {
                 <RangeCalendarMonth
                   blockedDateTimeRanges={blockedDateTimeRanges}
                   DateTimeFormat={DateTimeFormat}
+                  calendarDateWidth={calendarDateWidth}
                   edit={edit}
                   end={end}
-                  displayDate={this.props[edit].displayDate}
+                  dayButtonSize={dayButtonSize}
+                  displayDate={(this.props[edit].displayDate ? this.props[edit].displayDate : start.displayDate)}
                   firstDayOfWeek={this.props.firstDayOfWeek}
-                  key={this.props[edit].displayDate.toDateString()}
+                  key={(this.props[edit].displayDate ?
+                    this.props[edit].displayDate.toDateString() : start.displayDate.toDateString())}
                   locale={locale}
                   onTouchTapDay={this.props.onTouchTapDay.bind(this)}
                   ref={(ref) => this.calendarRefs.calendar = ref}
@@ -325,7 +278,6 @@ class RangeCalendar extends Component {
               </SlideInTransitionGroup>
             </div>
           }
-
           {displayTime &&
             <RangeTimePicker
               blockedDateTimeRanges={blockedDateTimeRanges}
@@ -335,20 +287,6 @@ class RangeCalendar extends Component {
               onTouchTapHour={this.props.onTouchTapHour.bind(this)}
               start={start}
               utils={utils}
-            />
-          }
-
-
-          {okLabel &&
-            <RangeCalendarActionButtons
-              autoOk={this.props.autoOk}
-              cancelLabel={cancelLabel}
-              okLabel={okLabel}
-              onTouchTapCancel={onTouchTapCancel}
-              onTouchTapOk={onTouchTapOk}
-              blockedDateTimeRanges={blockedDateTimeRanges}
-              end={end}
-              start={start}
             />
           }
         </div>

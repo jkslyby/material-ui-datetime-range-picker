@@ -5,10 +5,6 @@ import NavigationChevronLeft from 'material-ui/svg-icons/navigation/chevron-left
 import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
 import SlideInTransitionGroup from '../internal/SlideIn';
 
-
-import {FlatButton} from 'material-ui';
-
-
 const styles = {
   root: {
     display: 'flex',
