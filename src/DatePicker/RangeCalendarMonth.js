@@ -36,6 +36,8 @@ class RangeCalendarMonth extends Component {
     DateTimeFormat: PropTypes.func.isRequired,
     autoOk: PropTypes.bool,
     blockedDateTimeRanges: PropTypes.array,
+    calendarDateWidth: PropTypes.string,
+    dayButtonSize: PropTypes.string,
     displayDate: PropTypes.object.isRequired,
     edit: PropTypes.string.isRequired,
     end: PropTypes.object.isRequired,
@@ -127,6 +129,8 @@ class RangeCalendarMonth extends Component {
     const {
       DateTimeFormat,
       blockedDateTimeRanges, // eslint-disable-line no-unused-vars
+      calendarDateWidth,
+      dayButtonSize,
       edit, // eslint-disable-line no-unused-vars
       end, // eslint-disable-line no-unused-vars
       locale,
@@ -150,7 +154,9 @@ class RangeCalendarMonth extends Component {
         <DayButton
           DateTimeFormat={DateTimeFormat}
           locale={locale}
+          calendarDateWidth={calendarDateWidth}
           date={day}
+          dayButtonSize={dayButtonSize}
           disabled={disabled}
           isBetweenDates={isBetweenDates}
           containsBlockedTime={containsBlockedTime}

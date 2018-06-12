@@ -7,6 +7,7 @@ import RangeCalendarMonth from './RangeCalendarMonth';
 import CalendarToolbar from './CalendarToolbar';
 import RangeTimePicker from './RangeTimePicker';
 import SlideInTransitionGroup from '../internal/SlideIn';
+import parseNum from 'parse-num';
 
 import {
   defaultUtils,
@@ -21,7 +22,10 @@ class RangeCalendar extends Component {
     DateTimeFormat: PropTypes.func.isRequired,
     autoOk: PropTypes.bool,
     blockedDateTimeRanges: PropTypes.array,
+    calendarDateWidth: PropTypes.string,
+    calendarTimeWidth: PropTypes.string,
     cancelLabel: PropTypes.node,
+    dayButtonSize: PropTypes.string,
     disableYearSelection: PropTypes.bool,
     displayTime: PropTypes.bool,
     edit: PropTypes.string.isRequired,
@@ -156,12 +160,34 @@ class RangeCalendar extends Component {
     const {prepareStyles} = this.context.muiTheme;
     const toolbarInteractions = this.getToolbarInteractions();
     const {calendarTextColor} = this.context.muiTheme.datePicker;
+    const {
+      blockedDateTimeRanges,
+      calendarDateWidth,
+      calendarTimeWidth,
+      cancelLabel, // eslint-disable-line no-unused-vars
+      DateTimeFormat,
+      dayButtonSize,
+      displayTime,
+      edit,
+      end,
+      firstDayOfWeek,
+      locale,
+      okLabel, // eslint-disable-line no-unused-vars
+      onTouchTapCancel, // eslint-disable-line no-unused-vars
+      onTouchTapOk, // eslint-disable-line no-unused-vars
+      start,
+      utils,
+    } = this.props;
+
+    const width = (displayTime ? (calendarTimeWidth || '125px') : (calendarDateWidth || '310px'));
+    const buttonStateSize = parseNum(dayButtonSize || '34px');
+    const unit = (dayButtonSize || 'px').replace(/[0-9.]/g, '');
 
     const styles = {
       root: {
         color: calendarTextColor,
         userSelect: 'none',
-        width: (this.props.displayTime ? 125 : 310),
+        width: width,
       },
       calendar: {
         display: 'flex',
@@ -174,7 +200,7 @@ class RangeCalendar extends Component {
         flexDirection: 'column',
         fontSize: 12,
         fontWeight: 400,
-        padding: '0px 8px',
+        padding: `0px ${buttonStateSize / 4}${unit}`,
         transition: transitions.easeOut(),
       },
       yearContainer: {
@@ -184,7 +210,7 @@ class RangeCalendar extends Component {
         height: 272,
         marginTop: 10,
         overflow: 'hidden',
-        width: 310,
+        width: (calendarDateWidth || '310px'),
       },
       weekTitle: {
         display: 'flex',
@@ -197,7 +223,8 @@ class RangeCalendar extends Component {
         textAlign: 'center',
       },
       weekTitleDay: {
-        width: 42,
+        margin: 'auto',
+        minWidth: dayButtonSize || '34px',
       },
       transitionSlide: {
         height: 214,
@@ -205,22 +232,6 @@ class RangeCalendar extends Component {
     };
 
     const weekTitleDayStyle = prepareStyles(styles.weekTitleDay);
-
-    const {
-      blockedDateTimeRanges,
-      cancelLabel, // eslint-disable-line no-unused-vars
-      DateTimeFormat,
-      displayTime,
-      edit,
-      end,
-      firstDayOfWeek,
-      locale,
-      okLabel, // eslint-disable-line no-unused-vars
-      onTouchTapCancel, // eslint-disable-line no-unused-vars
-      onTouchTapOk, // eslint-disable-line no-unused-vars
-      start,
-      utils,
-    } = this.props;
 
     return (
       <div style={prepareStyles(styles.root)}>
@@ -250,8 +261,10 @@ class RangeCalendar extends Component {
                 <RangeCalendarMonth
                   blockedDateTimeRanges={blockedDateTimeRanges}
                   DateTimeFormat={DateTimeFormat}
+                  calendarDateWidth={calendarDateWidth}
                   edit={edit}
                   end={end}
+                  dayButtonSize={dayButtonSize}
                   displayDate={(this.props[edit].displayDate ? this.props[edit].displayDate : start.displayDate)}
                   firstDayOfWeek={this.props.firstDayOfWeek}
                   key={(this.props[edit].displayDate ?

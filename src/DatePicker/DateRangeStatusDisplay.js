@@ -5,6 +5,14 @@ function getStyles(props) {
   const isLandscape = props.mode === 'landscape';
 
   const styles = {
+    label: {
+      marginRight: '5px',
+      textTransform: 'capitalize',
+      fontWeight: 'bold',
+      whiteSpace: 'nowrap',
+      overflowX: 'hidden',
+      textOverflow: 'ellipsis',
+    },
     root: {
       width: isLandscape ? 165 : '100%',
       height: isLandscape ? 330 : 'auto',
@@ -58,27 +66,16 @@ class DateRangeStatusDisplay extends Component {
 
     const {prepareStyles} = this.context.muiTheme;
     const styles = getStyles(this.props, this.context);
-
+    const status = (!displayTime ? 'Date' : 'Time');
+    const label = (edit === 'start' ? startLabel : endLabel);
+    const defaultLabel = (edit === 'start' ? 'pick up' : 'drop off');
     return (
       <div {...other} style={prepareStyles(styles.root, style)}>
 
         <div style={styles.text}>
-          {edit === 'start' &&
-            <span style={{marginRight: '5px', textTransform: 'capitalize', fontWeight: 'bold'}}>
-              {(startLabel ? startLabel : 'pick up')}
-            </span>
-          }
-          {edit === 'end' &&
-            <span style={{marginRight: '5px', textTransform: 'capitalize', fontWeight: 'bold'}}>
-              {(endLabel ? endLabel : 'drop off')}
-            </span>
-          }
-          {!displayTime &&
-            <span style={{fontWeight: 'bold'}}>Date</span>
-          }
-          {displayTime &&
-            <span style={{fontWeight: 'bold'}}>Time</span>
-          }
+          <div style={styles.label}>
+            {(label ? `${label} ${status}` : `${defaultLabel} ${status}`)}
+          </div>
         </div>
 
       </div>

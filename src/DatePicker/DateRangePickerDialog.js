@@ -27,9 +27,12 @@ class DateRangePickerDialog extends Component {
     autoOk: PropTypes.bool,
     autoOpenField: PropTypes.bool,
     blockedDateTimeRanges: PropTypes.array,
+    calendarDateWidth: PropTypes.string,
+    calendarTimeWidth: PropTypes.string,
     cancelLabel: PropTypes.node,
     container: PropTypes.oneOf(['dialog', 'inline']),
     containerStyle: PropTypes.object,
+    dayButtonSize: PropTypes.string,
     displayTime: PropTypes.bool,
     edit: PropTypes.string,
     end: PropTypes.object,
@@ -514,9 +517,12 @@ class DateRangePickerDialog extends Component {
       autoOk,
       autoOpenField, // eslint-disable-line no-unused-vars
       blockedDateTimeRanges,
+      calendarDateWidth,
+      calendarTimeWidth,
       cancelLabel,
       container,
       containerStyle,
+      dayButtonSize, // eslint-disable-line no-unused-vars
       displayTime, // eslint-disable-line no-unused-vars
       edit, // eslint-disable-line no-unused-vars
       endLabel,
@@ -541,14 +547,22 @@ class DateRangePickerDialog extends Component {
 
     const {allRefs, open} = this.state;
 
+    const width = (this.state.displayTime ? (calendarTimeWidth || '125px') : (calendarDateWidth || '310px'));
+
     const styles = {
       dialogContent: {
-        width: (this.state.displayTime ? 125 : 310),
+        width: width,
       },
       dialogBodyContent: {
         padding: 0,
         minHeight: 280,
-        minWidth: (this.state.displayTime ? 125 : 310),
+        minWidth: width,
+        width: width,
+        ...(container !== 'inline' ? {
+          right: 0,
+          bottom: 0,
+          margin: 'auto',
+        } : {}),
       },
     };
     let newAnchorEl = this.state.anchorEl;
@@ -610,9 +624,12 @@ class DateRangePickerDialog extends Component {
             autoOk={autoOk}
             blockedDateTimeRanges={blockedDateTimeRanges}
             DateTimeFormat={DateTimeFormat}
+            calendarDateWidth={calendarDateWidth}
+            calendarTimeWidth={calendarTimeWidth}
             cancelLabel={cancelLabel}
             disableYearSelection={true}
             displayTime={this.state.displayTime}
+            dayButtonSize={dayButtonSize}
             firstDayOfWeek={firstDayOfWeek}
             locale={locale}
             onTouchTapDay={this.handleTouchTapDay.bind(this)}

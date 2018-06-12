@@ -39,6 +39,14 @@ class DateRangePicker extends Component {
       })
     ),
     /**
+     * Override the default width of the calendar when displaying days.
+     */
+    calendarDateWidth: PropTypes.string,
+    /**
+     * Override the default width of the calendar when displaying times.
+     */
+    calendarTimeWidth: PropTypes.string,
+    /**
      * Override the default text of the 'Cancel' button.
      */
     cancelLabel: PropTypes.node,
@@ -52,6 +60,10 @@ class DateRangePicker extends Component {
      * `inline` displays the DatePicker below the input field (similar to auto complete).
      */
     container: PropTypes.oneOf(['dialog', 'inline']),
+    /**
+     * Override the default size of day buttons.
+     */
+    dayButtonSize: PropTypes.string,
     /**
      * Override the inline-styles of DatePickerDialog's Container element.
      */
@@ -591,9 +603,12 @@ class DateRangePicker extends Component {
       autoOk,
       autoOpenField,
       blockedDateTimeRanges,
+      calendarDateWidth,
+      calendarTimeWidth,
       cancelLabel,
       className,
       container,
+      dayButtonSize,
       dialogContainerStyle,
       end,
       endLabel,
@@ -700,9 +715,12 @@ class DateRangePicker extends Component {
           autoOk={autoOk}
           autoOpenField={autoOpenField}
           blockedDateTimeRanges={blockedDateTimeRanges}
+          calendarDateWidth={calendarDateWidth}
+          calendarTimeWidth={calendarTimeWidth}
           cancelLabel={cancelLabel}
           container={container}
           containerStyle={dialogContainerStyle}
+          dayButtonSize={dayButtonSize}
           end={end}
           endLabel={endLabel}
           firstDayOfWeek={firstDayOfWeek}
