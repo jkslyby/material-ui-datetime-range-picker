@@ -46,32 +46,28 @@ This is still a work in progress so use it at your own risk. I've added some bas
 
 
   **autoOk:**
-<pre>
-  Description:
-    Boolean - If true, this closes the calendar automatically
-    when a date/time is selected.
-  Default:
-      false
-</pre>
+&nbsp; &nbsp; Description:
+<pre>      Boolean - If true, this closes the calendar automatically
+    when a date/time is selected.</pre>
+&nbsp; &nbsp; Default:
+<pre>      false</pre>
   **autoOpenField:**
-<pre>
-  Description:
-      Boolean - If true, immediately jumps to the next input field.
+&nbsp; &nbsp; Description:
+<pre>      Boolean - If true, immediately jumps to the next input field.
       For example, if you just selected the start date, the start time
-      field would open immediately.
-  Default:
-      false
+      field would open immediately.</pre>
+&nbsp; &nbsp; Default:
+<pre>      false
 </pre>
   **blockedDateTimeRanges:**
-  <pre>
-  Description:
-      Array of Objects with start and end attributes - Allows you to
+&nbsp; &nbsp; Description:
+<pre>      Array of Objects with start and end attributes - Allows you to
       block specific datetime ranges so that datetimes in those ranges
-      are not selectable.
-  Default:
-      []
-  Example:
+      are not selectable.</pre>
+&nbsp; &nbsp; Default:
+<pre>      []
 </pre>
+&nbsp; &nbsp; Example:
 ```javascript
       let blockedDateTimeRanges = [
         {
@@ -85,87 +81,68 @@ This is still a work in progress so use it at your own risk. I've added some bas
       ]
 ```
   **calendarDateWidth:**
-<pre>
-  Description:
-      String - Allows you to adjust the width of the **day** picker. It is a string
-      because it allows you to use different units from px to vw.
-  Default:
-      '310px'
-</pre>
+&nbsp; &nbsp; Description:
+<pre>      String - Allows you to adjust the width of the **day** picker. It is a string
+      because it allows you to use different units from px to vw.</pre>
+&nbsp; &nbsp; Default:
+<pre>      '310px'</pre>
   **calendarTimeWidth:**
-<pre>
-  Description:
-      String - Allows you to adjust the width of the **time** picker. It is a string
-      because it allows you to use different units from px to vw.
-  Default:
-      '125px'
-</pre>
+&nbsp; &nbsp; Description:
+<pre>      String - Allows you to adjust the width of the **time** picker. It is a string
+      because it allows you to use different units from px to vw.</pre>
+&nbsp; &nbsp; Default:
+<pre>      '125px'</pre>
   **className:**
-<pre>
-  Description:
-      String - If provided, it will allow the class styling to overwrite some basic
-      styling of the root element.
-  Default:
-      null
-</pre>
-
+&nbsp; &nbsp; Description:
+<pre>      String - If provided, it will allow the class styling to overwrite some basic
+      styling of the root element.</pre>
+&nbsp; &nbsp; Default:
+<pre>      null</pre>
 **container:**
-<pre>
-  Description:
-      String - Determines if the calendar/time picker should appear as a
-      modal or inline when active.
-  Default:
-      'dialog'
-  Options:
-      'dialog' or 'inline'
-</pre>
+&nbsp; &nbsp; Description:
+<pre>      String - Determines if the calendar/time picker should appear as a
+      modal or inline when active.</pre>
+&nbsp; &nbsp; Default:
+<pre>      'dialog'</pre>
+&nbsp; &nbsp; Options:
+<pre>      'dialog' or 'inline'</pre>
   **dayButtonSize:**
-<pre>
-  Description:
-      String - Allows you to adjust the size of the **day button**. It is a string
-      because it allows you to use different units from px to vw.
-  Default:
-      '34px'
-</pre>
+&nbsp; &nbsp; Description:
+<pre>      String - Allows you to adjust the size of the **day button**. It is a string
+      because it allows you to use different units from px to vw.</pre>
+&nbsp; &nbsp; Default:
+<pre>      '34px'</pre>
   **endLabel:**
-<pre>
-  Description:
-      String - The text used to indicate the ending date/time selection fields.
-  Default:
-      'End'
-</pre>
+&nbsp; &nbsp; Description:
+<pre>      String - The text used to indicate the ending date/time selection fields.</pre>
+&nbsp; &nbsp; Default:
+<pre>      'End'</pre>
   **firstDayOfWeek:**
-<pre>
-  Description:
-      Integer - Used to change the first day of week. It varies from Saturday
+&nbsp; &nbsp; Description:
+<pre>      Integer - Used to change the first day of week. It varies from Saturday
       to Monday between different locales. The allowed range is 0 (Sunday)
-      to 6 (Saturday). The default is `1`, Monday, as per ISO 8601.
-  Default:
-      1
-</pre>
+      to 6 (Saturday). The default is `1`, Monday, as per ISO 8601.</pre>
+&nbsp; &nbsp; Default:
+<pre>      1</pre>
   **locale:**
-<pre>
-  Description:
-      String - The locale for calculating the datetime.
-  Default:
-      'en-US'
-</pre>
+&nbsp; &nbsp; Description:
+<pre>      String - The locale for calculating the datetime.</pre>
+&nbsp; &nbsp; Default:
+<pre>      'en-US'</pre>
   **mode:**
-<pre>
-  Description:
-      String - Determines the rotation of the calendar.
-  Default:
-      'portrait'
-  Options:
-      'portrait' or 'landscape'
-</pre>
+&nbsp; &nbsp; Description:
+<pre>      String - Determines the rotation of the calendar.</pre>
+&nbsp; &nbsp; Default:
+<pre>      'portrait'</pre>
+&nbsp; &nbsp; Options:
+<pre>      'portrait' or 'landscape'</pre>
   **onChange(e, selection):**
-<pre>
-  Description:
-      Function - Called when the datetimes have been selected for start and end.
-  Default: null
-  Example:
-      The selection will be an object with start and end attributes that will either be a
+&nbsp; &nbsp; Description:
+<pre>      Function - Called when the datetimes have been selected for start and end.</pre>
+&nbsp; &nbsp; Default:
+<pre>      null</pre>
+&nbsp; &nbsp; Example:
+<pre>      The selection will be an object with start and end attributes that will either be a
       datetime value or falsey (undefined/null).
 </pre>
 ```javascript
@@ -174,49 +151,41 @@ This is still a work in progress so use it at your own risk. I've added some bas
     end: undefined
   }
 ```
-<pre><strong>Note that if a date is not given it will be either undefined or null (falsey value).</strong></pre>
+<pre>  <strong>Note that if a date is not given it will be either undefined or null (falsey value).</strong></pre>
 
   **onDismiss(e, selection):**
-<pre>
-  Description:
-      Function - Called when the picker has been closed/dismissed.
-  Default:
-      null
-  Example:
-      The `selection` will be an object with start and end attributes
-      that will either be a datetime value or falsey (undefined/null).
-</pre>
+&nbsp; &nbsp; Description:
+<pre>      Function - Called when the picker has been closed/dismissed.</pre>
+&nbsp; &nbsp; Default:
+<pre>      null</pre>
+&nbsp; &nbsp; Example:
+<pre>      The `selection` will be an object with start and end attributes
+      that will either be a datetime value or falsey (undefined/null).</pre>
 ```javascript
   {
     start: null,
     end: null
   }
 ```
-<pre><strong>Note that if a date is not given it will be either undefined or null (falsey value).</strong></pre>
+<pre>  <strong>Note that if a date is not given it will be either undefined or null (falsey value).</strong></pre>
 
   **showCalendarStatus:**
-<pre>
-  Description:
-      Boolean - If true, this will show a header with the current field being selected.
-  Default:
-      false
-  Example:
-      If true, the user would see a header displaying "Start Date",
-      "End Time", etc... or the custom labels provided.
-</pre>
+&nbsp; &nbsp; Description:
+<pre>      Boolean - If true, this will show a header with the current field being selected.</pre>
+&nbsp; &nbsp; Default:
+<pre>      false</pre>
+&nbsp; &nbsp; Example:
+<pre>      If true, the user would see a header displaying "Start Date",
+      "End Time", etc... or the custom labels provided.</pre>
   **startLabel:**
-<pre>
-  Description:
-      String - The text used to indicate the beginning date/time selection fields.
-  Default:
-      'Start'
-</pre>
+&nbsp; &nbsp; Description:
+<pre>      String - The text used to indicate the beginning date/time selection fields.</pre>
+&nbsp; &nbsp; Default:
+<pre>      'Start'</pre>
   **value:**
-<pre>
-  Description:
-      Object - The default value for the date/time range picker
-  Example:
-</pre>
+&nbsp; &nbsp; Description:
+<pre>      Object - The default value for the date/time range picker</pre>
+&nbsp; &nbsp; Example:
 ```javascript
   {
     start: Wed Jun 13 2018 12:00:00 GMT-0600 (MDT),
