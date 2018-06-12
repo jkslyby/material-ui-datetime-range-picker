@@ -228,10 +228,6 @@ class DateRangePicker extends Component {
      */
     textFieldStyle: PropTypes.object,
     /**
-     * Tells the component to hide or show the underline in the text field component
-     */
-    underlineShow: PropTypes.bool,
-    /**
      * This object should contain methods needed to build the calendar system.
      *
      * Useful for building a custom calendar system. Refer to the
@@ -267,7 +263,6 @@ class DateRangePicker extends Component {
     startLabelDate: 'Date',
     startLabelTime: 'Time',
     style: {},
-    underlineShow: true,
   };
 
   static contextTypes = {
@@ -632,7 +627,6 @@ class DateRangePicker extends Component {
       startLabelTime,
       style,
       textFieldStyle,
-      underlineShow, // eslint-disable-line no-unused-vars
       utils,
       ...other // eslint-disable-line no-unused-vars
     } = this.props;
