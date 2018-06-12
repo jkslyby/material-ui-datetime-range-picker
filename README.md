@@ -20,7 +20,7 @@ This is still a work in progress so use it at your own risk. I've added some bas
 
 `import { DateRangePicker } from 'material-ui-datetime-range-picker';`
 
-######Example:
+###### Example:
 ```
 <DateRangePicker
     autoOk={true}
@@ -40,7 +40,7 @@ This is still a work in progress so use it at your own risk. I've added some bas
     value={{start: Wed Jun 13 2018 12:00:00 GMT-0600 (MDT), end: Wed Jun 14 2018 12:00:00 GMT-0600 (MDT), }} />
 ```
 
-######Options:
+###### Options:
 
 autoOk:
   Description:
@@ -174,7 +174,7 @@ value:
     }
     ```
 
-######Contributions:
+###### Contributions:
 
 I don't have a lot of time to maintain this repo currently. If you see any bugs, feel free to open an issue and if you have time, code contributions are always welcome.
 
