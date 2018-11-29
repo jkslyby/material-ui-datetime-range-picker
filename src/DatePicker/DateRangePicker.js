@@ -2,7 +2,19 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {dateTimeFormat, formatIso, isEqualDateTime} from './dateUtils';
 import DateRangePickerDialog from './DateRangePickerDialog';
-import SvgIcon from 'material-ui/SvgIcon';
+import SvgIcon from '@material-ui/core/SvgIcon';
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+  root: {
+    fill: '#474747',
+    width: '10px', height: '6px',
+    marginRight: '10px',
+  },
+  colorDisabled: {
+    fill: '#a2a2a2',
+  },
+});
 
 class DateRangePicker extends Component {
   static propTypes = {
@@ -502,14 +514,14 @@ class DateRangePicker extends Component {
   };
 
   dropdownArrow = (disabled) => {
-    const {layout} = this.props;
+    const {classes, layout} = this.props;
     const style = {
       fill: (disabled ? '#a2a2a2' : '#474747'),
       width: '10px', height: '6px',
       marginRight: '10px',
     };
     return (layout !== 'single' &&
-      <SvgIcon viewBox="3064 -23442 10 6" style={style}>
+      <SvgIcon viewBox="3064 -23442 10 6" classes={{root: classes.root, colorDisabled: classes.colorDisabled}} style={style}>
         <path
           d="M23.07,10a.707.707,0,0,1-.479-.19.684.684,0,0,1,0-.949L26.485,5,22.591,1.139a.684.684,0,0,1,0-.949.7.7,0,0,1,.957,0L28.4,5,23.549,9.81A.652.652,0,0,1,23.07,10Z"  // eslint-disable-line max-len
           transform="translate(3074 -23464.4) rotate(90)"
@@ -739,4 +751,4 @@ class DateRangePicker extends Component {
   }
 }
 
-export default DateRangePicker;
+export default withStyles(styles)(DateRangePicker);

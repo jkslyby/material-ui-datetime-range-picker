@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {IconButton} from 'material-ui';
-import NavigationChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
-import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
+import IconButton from '@material-ui/core/IconButton';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
 import SlideInTransitionGroup from '../internal/SlideIn';
 
 const styles = {
@@ -78,8 +78,8 @@ class CalendarToolbar extends Component {
       year: 'numeric',
     }).format(displayDate);
 
-    const nextButtonIcon = this.context.muiTheme.isRtl ? <NavigationChevronLeft /> : <NavigationChevronRight />;
-    const prevButtonIcon = this.context.muiTheme.isRtl ? <NavigationChevronRight /> : <NavigationChevronLeft />;
+    const nextButtonIcon = this.context.muiTheme.isRtl ? <ChevronLeft /> : <ChevronRight />;
+    const prevButtonIcon = this.context.muiTheme.isRtl ? <ChevronRight /> : <ChevronLeft />;
 
 
     return (

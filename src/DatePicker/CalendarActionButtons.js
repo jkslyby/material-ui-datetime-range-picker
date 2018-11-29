@@ -1,6 +1,27 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {FlatButton} from 'material-ui';
+import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
+
+
+const styles = theme => ({
+  flatButton: {
+    fontsize: 14,
+    margin: '4px 8px 8px 0px',
+    maxHeight: 36,
+    minWidth: 64,
+    padding: 0,
+  },
+  root: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    margin: 0,
+    maxHeight: 48,
+    padding: 0,
+  },
+});
+
 
 class CalendarActionButton extends Component {
   static propTypes = {
@@ -12,46 +33,30 @@ class CalendarActionButton extends Component {
   };
 
   render() {
-    const {cancelLabel, okLabel} = this.props;
-
-    const styles = {
-      root: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        margin: 0,
-        maxHeight: 48,
-        padding: 0,
-      },
-      flatButtons: {
-        fontsize: 14,
-        margin: '4px 8px 8px 0px',
-        maxHeight: 36,
-        minWidth: 64,
-        padding: 0,
-      },
-    };
+    const {cancelLabel, classes, okLabel} = this.props;
 
     return (
-      <div style={styles.root} >
-        <FlatButton
-          label={cancelLabel}
+      <div className={classes.root}>
+        <Button
           onClick={this.props.onTouchTapCancel}
-          primary={true}
-          style={styles.flatButtons}
-        />
+          color="primary"
+          className={classes.flatButton}
+        >
+          {cancelLabel}
+        </Button>
         {!this.props.autoOk &&
-          <FlatButton
+          <Button
             disabled={this.refs.calendar !== undefined && this.refs.calendar.isSelectedDateDisabled()}
-            label={okLabel}
             onClick={this.props.onTouchTapOk}
-            primary={true}
-            style={styles.flatButtons}
-          />
+            color="primary"
+            className={classes.flatButton}
+          >
+            {okLabel}
+          </Button>
         }
       </div>
     );
   }
 }
 
-export default CalendarActionButton;
+export default withStyles(styles)(CalendarActionButton);

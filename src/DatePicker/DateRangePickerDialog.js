@@ -5,7 +5,7 @@ import keycode from 'keycode';
 import DateRangeDisplay from './DateRangeDisplay';
 import DateRangeStatusDisplay from './DateRangeStatusDisplay';
 import RangeCalendar from './RangeCalendar';
-import {Dialog} from 'material-ui';
+import Dialog from 'material-ui/Dialog';
 import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 import update from 'react-addons-update';
 
