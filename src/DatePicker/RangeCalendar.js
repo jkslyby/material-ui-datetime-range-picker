@@ -225,6 +225,7 @@ class RangeCalendar extends Component {
       weekTitleDay: {
         margin: 'auto',
         minWidth: dayButtonSize || '34px',
+        minHeight: dayButtonSize || '34px',
       },
       transitionSlide: {
         height: 214,

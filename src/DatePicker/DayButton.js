@@ -75,6 +75,7 @@ function getStyles(props, context, state) {
       WebkitTapHighlightColor: 'rgba(0,0,0,0)', // Remove mobile color flashing (deprecated)
       margin: margin,
       minWidth: `${buttonStateWidth}${unit}`,
+      minHeight: `${buttonStateWidth}${unit}`,
     },
     label: {
       color: labelColor,
