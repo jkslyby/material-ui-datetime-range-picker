@@ -504,7 +504,7 @@ class DateRangePicker extends Component {
   dropdownArrow = (disabled) => {
     const {layout} = this.props;
     const style = {
-      fill: (disabled ? '#a2a2a2' : '#474747'),
+      fill: (disabled ? '#a2a2a2' : '#757575'),
       width: '10px', height: '6px',
       marginRight: '10px',
     };
@@ -535,7 +535,7 @@ class DateRangePicker extends Component {
       justifyContent: 'space-between',
       alignItems: 'center',
       cursor: (disabled ? 'not-allowed' : 'pointer'),
-      color: (disabled ? '#a2a2a2' : '#474747'),
+      color: '#757575',
       ...(layout !== 'single' ?
       {
         width: '99px',
@@ -554,7 +554,7 @@ class DateRangePicker extends Component {
       justifyContent: 'space-between',
       alignItems: 'center',
       cursor: (disabled ? 'not-allowed' : 'pointer'),
-      color: (disabled ? '#a2a2a2' : '#474747'),
+      color: '#757575',
       ...(layout !== 'single' ?
       {
         width: '117px',

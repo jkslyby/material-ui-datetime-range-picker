@@ -22,7 +22,7 @@ function getStyles(props) {
       borderTopLeftRadius: 2,
       borderTopRightRadius: isLandscape ? 0 : 2,
       borderBottomLeftRadius: isLandscape ? 2 : 0,
-      color: '#474747',
+      color: '#757575',
       padding: 10,
       borderBottom: '1px solid #e0e0e0',
       boxSizing: 'border-box',
