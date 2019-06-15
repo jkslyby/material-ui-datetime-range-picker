@@ -521,7 +521,7 @@ class DateRangePicker extends Component {
   divider() {
     const {layout} = this.props;
     return (layout === 'single' &&
-      <span style={{margin: 'auto 10px'}}>-</span>
+      <span style={{margin: 'auto 10px', color: '#757575'}}>-</span>
     );
   }
 
