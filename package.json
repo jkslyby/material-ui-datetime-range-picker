@@ -2,7 +2,7 @@
   "name": "material-ui-datetime-range-picker",
   "private": true,
   "author": "JK Slyby",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "React Datetime Range Picker Component that Implements Google's Material Design Via Material-UI.",
   "main": "./src/index.js",
   "keywords": [
