@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import SvgIcon from 'material-ui/SvgIcon';
+
 import {dateTimeFormat, formatIso, isEqualDateTime} from './dateUtils';
 import DateRangePickerDialog from './DateRangePickerDialog';
-import SvgIcon from 'material-ui/SvgIcon';
 
 class DateRangePicker extends Component {
   static propTypes = {
@@ -266,8 +268,12 @@ class DateRangePicker extends Component {
   };
 
   static contextTypes = {
-    muiTheme: PropTypes.object.isRequired,
+    muiTheme: PropTypes.object,
   };
+
+  static childContextTypes = {
+    muiTheme: PropTypes.object
+  }
 
   state = {
     dialogVisible: false,
@@ -321,6 +327,16 @@ class DateRangePicker extends Component {
       }
     }
   }
+
+  getTheme() {
+    return this.context.muiTheme || getMuiTheme();
+  };
+
+  getChildContext() {
+    return {
+      muiTheme: this.getTheme()
+    }
+  };
 
   getDates() {
     return {
@@ -632,7 +648,7 @@ class DateRangePicker extends Component {
     } = this.props;
 
 
-    const {prepareStyles} = this.context.muiTheme;
+    const {prepareStyles} = this.getTheme();
     const styles = this.getStyles();
 
     const {selectedStartDate, selectedEndDate, startDate, endDate} = this.state;
