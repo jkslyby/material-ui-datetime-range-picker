@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {MenuItem} from 'material-ui';
+import MenuItem from '@material-ui/core/MenuItem';
 import ReactDOM from 'react-dom';
 
 import {
@@ -116,10 +116,11 @@ class RangeTimePicker extends Component {
 
     return (
       <MenuItem
-        primaryText={formattedDate}
         disabled={this.shouldDisableTime(hour)}
         onClick={this.props.onTouchTapHour.bind(this, hour)}
-      />
+      >
+        {formattedDate}
+      </MenuItem>
     );
   }
 

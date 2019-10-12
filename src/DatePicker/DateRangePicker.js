@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {dateTimeFormat, formatIso, isEqualDateTime} from './dateUtils';
 import DateRangePickerDialog from './DateRangePickerDialog';
-import SvgIcon from 'material-ui/SvgIcon';
+import SvgIcon from '@material-ui/core/SvgIcon';
 
 class DateRangePicker extends Component {
   static propTypes = {
@@ -65,13 +65,13 @@ class DateRangePicker extends Component {
      */
     dayButtonSize: PropTypes.string,
     /**
-     * Override the inline-styles of DatePickerDialog's Container element.
-     */
-    dialogContainerStyle: PropTypes.object,
-    /**
      * Disables the DatePicker.
      */
     disabled: PropTypes.bool,
+    /**
+     * Custom display function for date time fields.
+     */
+    display: PropTypes.func,
     /**
      * This is the container for attributes and methods specific to the 'end' calendar.
      */
@@ -277,7 +277,7 @@ class DateRangePicker extends Component {
     selectedEndDate: undefined,
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const newDates = this.getControlledDate();
     if (this.isControlled() && newDates) {
       this.setState({
@@ -292,7 +292,7 @@ class DateRangePicker extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.isControlled()) {
       const newDates = this.getControlledDate(nextProps);
       if (newDates) {
@@ -604,7 +604,7 @@ class DateRangePicker extends Component {
       className,
       container,
       dayButtonSize,
-      dialogContainerStyle,
+      display,
       end,
       endLabel,
       endLabelDate,
@@ -644,66 +644,105 @@ class DateRangePicker extends Component {
     const formattedEndDate = this.formatDateForDisplay(ending, endLabelDate);
     const formattedEndTime = this.formatTimeForDisplay(ending, endLabelTime);
 
+    const startInfo = {
+      dateRef: 'startdatefield',
+      onClickDate: this.handleTouchTap.bind(this,
+                                            this.refs.startdatefield,
+                                            'start',
+                                            'date',
+                                            false),
+      formattedDate: formattedStartDate,
+      timeRef: 'starttimefield',
+      onClickTime: this.handleTouchTap.bind(this,
+                                            this.refs.starttimefield,
+                                            'start',
+                                            'time',
+                                            (formattedStartDate === startLabelDate)),
+      formattedTime: formattedStartTime,
+    };
+
+    const endInfo = {
+      dateRef: 'enddatefield',
+      onClickDate: this.handleTouchTap.bind(this,
+                                            this.refs.enddatefield,
+                                            'end',
+                                            'date',
+                                            (formattedStartDate === startLabelDate)),
+      formattedDate: formattedEndDate,
+      timeRef: 'endtimefield',
+      onClickTime: this.handleTouchTap.bind(this,
+                                            this.refs.endtimefield,
+                                            'end',
+                                            'time',
+                                            (formattedEndDate === endLabelDate)),
+      formattedTime: formattedEndTime,
+    };
+
     return (
       <div className={className} style={prepareStyles(Object.assign({}, style))}>
-        <div style={Object.assign({}, styles.textField, textFieldStyle)}>
-          {layout !== 'single' &&
-            <div style={{width: '100%', fontWeight: 'semibold', marginBottom: '5px', fontSize: '15px'}}>Pick Up</div>
-          }
-          <div style={styles.startContainer}>
-            <div
-              style={this.dateStyle()}
-              ref="startdatefield"
-              onFocus={this.handleFocus}
-              onClick={this.handleTouchTap.bind(this, this.refs.startdatefield, 'start', 'date', false)}
-            >
-              <span>{formattedStartDate}</span>
-              {layout === 'single' && formattedStartDate !== startLabelDate &&
-                <span>,</span>
-              }
-              {this.dropdownArrow()}
+        {display ?
+
+          display(startInfo, endInfo, this.handleFocus) :
+
+          <div style={Object.assign({}, styles.textField, textFieldStyle)}>
+            {layout !== 'single' &&
+              <div style={{width: '100%', fontWeight: 'semibold', marginBottom: '5px', fontSize: '15px'}}>Pick Up</div>
+            }
+            <div style={styles.startContainer}>
+              <div
+                style={this.dateStyle()}
+                ref="startdatefield"
+                onFocus={this.handleFocus}
+                onClick={this.handleTouchTap.bind(this, this.refs.startdatefield, 'start', 'date', false)}
+              >
+                <span>{formattedStartDate}</span>
+                {layout === 'single' && formattedStartDate !== startLabelDate &&
+                  <span>,</span>
+                }
+                {this.dropdownArrow()}
+              </div>
+              <div
+                style={this.timeStyle(formattedStartDate === startLabelDate)}
+                ref="starttimefield"
+                onFocus={this.handleFocus}
+                onClick={this.handleTouchTap.bind(this,
+                  this.refs.starttimefield, 'start', 'time', (formattedStartDate === startLabelDate))}
+              >
+                <span>{formattedStartTime}</span>
+                {this.dropdownArrow()}
+              </div>
             </div>
-            <div
-              style={this.timeStyle(formattedStartDate === startLabelDate)}
-              ref="starttimefield"
-              onFocus={this.handleFocus}
-              onClick={this.handleTouchTap.bind(this,
-                this.refs.starttimefield, 'start', 'time', (formattedStartDate === startLabelDate))}
-            >
-              <span>{formattedStartTime}</span>
-              {this.dropdownArrow()}
+            {this.divider()}
+            {layout !== 'single' &&
+              <div style={{width: '100%', fontWeight: 'semibold', marginBottom: '5px', fontSize: '15px'}}>Drop Off</div>
+            }
+            <div style={styles.endContainer}>
+              <div
+                style={this.dateStyle(formattedStartDate === startLabelDate)}
+                ref="enddatefield"
+                onFocus={this.handleFocus}
+                onClick={this.handleTouchTap.bind(this,
+                  this.refs.enddatefield, 'end', 'date', (formattedStartDate === startLabelDate))}
+              >
+                <span>{formattedEndDate}</span>
+                {layout === 'single' && formattedEndDate !== endLabelDate &&
+                  <span>,</span>
+                }
+                {this.dropdownArrow()}
+              </div>
+              <div
+                style={this.timeStyle(formattedEndDate === endLabelDate)}
+                ref="endtimefield"
+                onFocus={this.handleFocus}
+                onClick={this.handleTouchTap.bind(this,
+                  this.refs.endtimefield, 'end', 'time', (formattedEndDate === endLabelDate))}
+              >
+                <span>{formattedEndTime}</span>
+                {this.dropdownArrow()}
+              </div>
             </div>
           </div>
-          {this.divider()}
-          {layout !== 'single' &&
-            <div style={{width: '100%', fontWeight: 'semibold', marginBottom: '5px', fontSize: '15px'}}>Drop Off</div>
-          }
-          <div style={styles.endContainer}>
-            <div
-              style={this.dateStyle(formattedStartDate === startLabelDate)}
-              ref="enddatefield"
-              onFocus={this.handleFocus}
-              onClick={this.handleTouchTap.bind(this,
-                this.refs.enddatefield, 'end', 'date', (formattedStartDate === startLabelDate))}
-            >
-              <span>{formattedEndDate}</span>
-              {layout === 'single' && formattedEndDate !== endLabelDate &&
-                <span>,</span>
-              }
-              {this.dropdownArrow()}
-            </div>
-            <div
-              style={this.timeStyle(formattedEndDate === endLabelDate)}
-              ref="endtimefield"
-              onFocus={this.handleFocus}
-              onClick={this.handleTouchTap.bind(this,
-                this.refs.endtimefield, 'end', 'time', (formattedEndDate === endLabelDate))}
-            >
-              <span>{formattedEndTime}</span>
-              {this.dropdownArrow()}
-            </div>
-          </div>
-        </div>
+        }
         <DateRangePickerDialog
           DateTimeFormat={DateTimeFormat}
           autoOk={autoOk}
@@ -713,7 +752,6 @@ class DateRangePicker extends Component {
           calendarTimeWidth={calendarTimeWidth}
           cancelLabel={cancelLabel}
           container={container}
-          containerStyle={dialogContainerStyle}
           dayButtonSize={dayButtonSize}
           end={end}
           endLabel={endLabel}

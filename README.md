@@ -16,7 +16,7 @@ npm install material-ui-datetime-range-picker
 
 ## Notes
 
-This is still a work in progress so use it at your own risk. I've added some basic documentation. There are many attributes that need to be abstracted into a param and other work that needs to be done. Feel free to contribute!
+This is still a work in progress so use it at your own risk. I've added some basic documentation. There are many attributes that need to be abstracted into a param and other work that needs to be done. Please note that this uses Material UI version 0.2 and requires some additional imports. Feel free to contribute!
 
 ## Usage
 
@@ -24,21 +24,23 @@ This is still a work in progress so use it at your own risk. I've added some bas
 
 ### Example:
 ```
-<DateRangePicker
-    autoOk={true}
-    autoOpenField={true}
-    onChange={onChange}
-    onDismiss={onDismiss}
-    showCalendarStatus={true}
-    className="my-date-picker"
-    firstDayOfWeek={0}
-    dayButtonSize="6.25vw"
-    calendarDateWidth="80vw"
-    calendarTimeWidth="40vw"
-    local='en-US'
-    mode='portrait'
-    startLabel='Beginning'
-    endLabel='Ending'
+<MuiThemeProvider muiTheme={getMuiTheme(theme)}>
+  <DateRangePicker
+      autoOk={true}
+      autoOpenField={true}
+      onChange={onChange}
+      onDismiss={onDismiss}
+      showCalendarStatus={true}
+      className="my-date-picker"
+      firstDayOfWeek={0}
+      dayButtonSize="6.25vw"
+      calendarDateWidth="80vw"
+      calendarTimeWidth="40vw"
+      local='en-US'
+      mode='portrait'
+      startLabel='Beginning'
+      endLabel='Ending'
+</MuiThemeProvider>
 />
 ```
 
@@ -127,6 +129,80 @@ This is still a work in progress so use it at your own risk. I've added some bas
   Default:
       '34px'
 </pre>
+  **display(start, end, onFocus):**
+  Description:
+      Function - Enables an absolute customization of the date/time fields. Please note
+                 that all variables below are required if you do this!
+      Variables:
+        start {
+          dateRef - References the start date node,
+          onClickDate - Function for handling the onClick event for the start date,
+          formattedDate - Formatted start date,
+          timeRef - References the start time node,
+          onClickTime - Function for handling the onClick event for the start time,
+          formattedTime - Formatted start time,
+        }
+        end {
+          dateRef - References the end date node,
+          onClickDate - Function for handling the onClick event for the end date,
+          formattedDate - Formatted end date,
+          timeRef - References the end time node,
+          onClickTime - Function for handling the onClick event for the end time,
+          formattedTime - Formatted end time,
+        }
+        onFocus - Function for handling focus event
+  Example:
+```javascript
+    display={(start, end, onFocus) => {
+      return (
+        <div className='date-range-picker-text-field'>
+          <div className='container'>
+            <div
+              className='date'
+              ref={start.dateRef}
+              onFocus={onFocus}
+              onClick={start.onClickDate}
+            >
+              <span>{start.formattedDate}</span>
+              {start.formattedDate !== 'Pick up' &&
+                <span>,</span>
+              }
+            </div>
+            <div
+              className={classNames('time', {disabled: start.formattedDate === 'Pick up'})}
+              ref={start.timeRef}
+              onFocus={onFocus}
+              onClick={start.onClickTime}
+            >
+              <span>{start.formattedTime}</span>
+            </div>
+          </div>
+          <span className='separator'>-</span>
+          <div className='container'>
+            <div
+              className={classNames('date', {disabled: start.formattedDate === 'Pick up'})}
+              ref={end.dateRef}
+              onFocus={onFocus}
+              onClick={end.onClickDate}
+            >
+              <span>{end.formattedDate}</span>
+              {end.formattedDate !== 'Drop off' &&
+                <span>,</span>
+              }
+            </div>
+            <div
+              className={classNames('time', {disabled: end.formattedDate === 'Drop off'})}
+              ref={end.timeRef}
+              onFocus={onFocus}
+              onClick={end.onClickTime}
+            >
+              <span>{end.formattedTime}</span>
+            </div>
+          </div>
+        </div>
+      );
+    }}
+```
   **endLabel:**
 <pre>
   Description:

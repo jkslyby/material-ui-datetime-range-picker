@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {FlatButton} from 'material-ui';
+import Button from '@material-ui/core/Button';
 
 import {
   isBeforeDateTime,
@@ -52,19 +52,21 @@ class RangeCalendarActionButton extends Component {
 
     return (
       <div style={styles.root} >
-        <FlatButton
-          label={cancelLabel}
+        <Button
           onClick={this.props.onTouchTapCancel}
           primary={true}
           style={styles.flatButtons}
-        />
-        <FlatButton
+        >
+          {cancelLabel}
+        </Button>
+        <Button
           disabled={this.shouldDisableOkay()}
-          label={okLabel}
           onClick={this.props.onTouchTapOk}
           primary={true}
           style={styles.flatButtons}
-        />
+        >
+          {okLabel}
+        </Button>
       </div>
     );
   }

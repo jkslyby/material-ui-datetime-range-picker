@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {IconButton} from 'material-ui';
-import NavigationChevronLeft from 'material-ui/svg-icons/navigation/chevron-left';
-import NavigationChevronRight from 'material-ui/svg-icons/navigation/chevron-right';
+import IconButton from '@material-ui/core/IconButton';
 import SlideInTransitionGroup from '../internal/SlideIn';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
 
 const styles = {
   root: {
@@ -39,19 +39,16 @@ class CalendarToolbar extends Component {
     prevMonth: true,
   };
 
-  static contextTypes = {
-    muiTheme: PropTypes.object.isRequired,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      transitionDirection: 'up',
+    };
+  }
 
-  state = {
-    transitionDirection: 'up',
-  };
-
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.displayDate !== this.props.displayDate) {
-      const nextDirection = this.context.muiTheme.isRtl ? 'right' : 'left';
-      const prevDirection = this.context.muiTheme.isRtl ? 'left' : 'right';
-      const direction = nextProps.displayDate > this.props.displayDate ? nextDirection : prevDirection;
+      const direction = nextProps.displayDate > this.props.displayDate ? 'left' : 'right';
       this.setState({
         transitionDirection: direction,
       });
@@ -78,9 +75,6 @@ class CalendarToolbar extends Component {
       year: 'numeric',
     }).format(displayDate);
 
-    const nextButtonIcon = this.context.muiTheme.isRtl ? <NavigationChevronLeft /> : <NavigationChevronRight />;
-    const prevButtonIcon = this.context.muiTheme.isRtl ? <NavigationChevronRight /> : <NavigationChevronLeft />;
-
 
     return (
       <div style={styles.root}>
@@ -88,7 +82,7 @@ class CalendarToolbar extends Component {
           disabled={!this.props.prevMonth}
           onClick={this.handleTouchTapPrevMonth}
         >
-          {prevButtonIcon}
+          <ChevronLeft />
         </IconButton>
         <SlideInTransitionGroup
           direction={this.state.transitionDirection}
@@ -102,7 +96,7 @@ class CalendarToolbar extends Component {
           disabled={!this.props.nextMonth}
           onClick={this.handleTouchTapNextMonth}
         >
-          {nextButtonIcon}
+          <ChevronRight />
         </IconButton>
       </div>
     );

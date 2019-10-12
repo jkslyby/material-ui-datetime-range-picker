@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import transitions from '../styles/transitions';
-import SlideInTransitionGroup from '../internal/SlideIn';
 
 function getStyles(props, context, state) {
   const {datePicker} = context.muiTheme;
@@ -137,13 +136,13 @@ class DateRangeDisplay extends Component {
     transitionDirection: 'up',
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (!this.props.monthDaySelected) {
       this.setState({selectedYear: true});
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.start.selectedDate !== this.props.start.selectedDate) {
       const direction = nextProps.start.selectedDate > this.props.start.selectedDate ? 'up' : 'down';
       this.setState({
@@ -209,11 +208,9 @@ class DateRangeDisplay extends Component {
 
         <div style={styles.monthDay}>
           <div key={`start-${startDate}`} style={{position: 'unset', width: '50%', top: 'unset', left: 'unset'}}>
-            <SlideInTransitionGroup style={styles.trans} direction={this.state.transitionDirection}>
-              <div onClick={onTouchTapMenu.bind(this, 'start', false)} style={styles.startDateTitle}>
-                {startDate}
-              </div>
-            </SlideInTransitionGroup>
+            <div onClick={onTouchTapMenu.bind(this, 'start', false)} style={styles.startDateTitle}>
+              {startDate}
+            </div>
             <div onClick={onTouchTapMenu.bind(this, 'start', true)} style={styles.startTimeTitle}>
               {startTime}
             </div>

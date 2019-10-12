@@ -5,8 +5,8 @@ import keycode from 'keycode';
 import DateRangeDisplay from './DateRangeDisplay';
 import DateRangeStatusDisplay from './DateRangeStatusDisplay';
 import RangeCalendar from './RangeCalendar';
-import {Dialog} from 'material-ui';
-import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
+import Dialog from '@material-ui/core/Dialog';
+import Popover from '@material-ui/core/Popover';
 import update from 'react-addons-update';
 
 import {
@@ -21,9 +21,9 @@ import {
 } from './dateUtils';
 
 class DateRangePickerDialog extends Component {
+
   static propTypes = {
     DateTimeFormat: PropTypes.func,
-    animation: PropTypes.func,
     autoOk: PropTypes.bool,
     autoOpenField: PropTypes.bool,
     blockedDateTimeRanges: PropTypes.array,
@@ -31,7 +31,6 @@ class DateRangePickerDialog extends Component {
     calendarTimeWidth: PropTypes.string,
     cancelLabel: PropTypes.node,
     container: PropTypes.oneOf(['dialog', 'inline']),
-    containerStyle: PropTypes.object,
     dayButtonSize: PropTypes.string,
     displayTime: PropTypes.bool,
     edit: PropTypes.string,
@@ -71,9 +70,10 @@ class DateRangePickerDialog extends Component {
     muiTheme: PropTypes.object.isRequired,
   };
 
-  // state = {
-  //   open: false,
-  // };
+  constructor(props) {
+    super(props);
+    this.popover = React.createRef();
+  }
 
   state = {
     allRefs: {
@@ -104,7 +104,7 @@ class DateRangePickerDialog extends Component {
     },
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.setState({
       end: {
         displayDate: this.props.utils.getFirstDayOfMonth(this.props.initialEndDate),
@@ -136,9 +136,7 @@ class DateRangePickerDialog extends Component {
     const newSelectedEndDate = cloneDate(newSelectedDate);
     newSelectedEndDate.setTime(newSelectedEndDate.getTime() + 1 * 60 * 60 * 1000);
     if (newDisplayDate !== this.state[this.state.edit].displayDate) {
-      const nextDirection = this.context.muiTheme.isRtl ? 'right' : 'left';
-      const prevDirection = this.context.muiTheme.isRtl ? 'left' : 'right';
-      const direction = newDisplayDate > this.state[this.state.edit].displayDate ? nextDirection : prevDirection;
+      const direction = newDisplayDate > this.state[this.state.edit].displayDate ? 'left' : 'right';
       let newState = update(this.state, {
         [this.state.edit]: {
           displayDate: {$set: newDisplayDate},
@@ -407,11 +405,13 @@ class DateRangePickerDialog extends Component {
       });
       keepOpen = true;
     }
-    this.setState(newState);
-    this.props.onAccept({
-      start: newState.start.selectedDate,
-      end: newState.end.selectedDate,
-    }, keepOpen);
+    this.setState(newState, () => {
+      this.props.onAccept({
+        start: newState.start.selectedDate,
+        end: newState.end.selectedDate,
+      }, keepOpen);
+      this.popover.current.updatePosition();
+    });
   };
 
   handleTouchTapHour = (hour) => {
@@ -475,9 +475,7 @@ class DateRangePickerDialog extends Component {
 
   handleMonthChange = (months) => {
     const {edit, start} = this.state;
-    const nextDirection = this.context.muiTheme.isRtl ? 'right' : 'left';
-    const prevDirection = this.context.muiTheme.isRtl ? 'left' : 'right';
-    const direction = months >= 0 ? nextDirection : prevDirection;
+    const direction = months >= 0 ? 'left' : 'right';
     this.setState({
       [this.state.edit]: {
         transitionDirection: direction,
@@ -521,7 +519,6 @@ class DateRangePickerDialog extends Component {
       calendarTimeWidth,
       cancelLabel,
       container,
-      containerStyle,
       dayButtonSize, // eslint-disable-line no-unused-vars
       displayTime, // eslint-disable-line no-unused-vars
       edit, // eslint-disable-line no-unused-vars
@@ -540,117 +537,106 @@ class DateRangePickerDialog extends Component {
       onShow, // eslint-disable-line no-unused-vars
       startLabel,
       style, // eslint-disable-line no-unused-vars
-      animation,
       utils,
       ...other
     } = this.props;
 
     const {allRefs, open} = this.state;
 
-    const width = (this.state.displayTime ? (calendarTimeWidth || '125px') : (calendarDateWidth || '310px'));
-
-    const styles = {
-      dialogContent: {
-        width: width,
-      },
-      dialogBodyContent: {
-        padding: 0,
-        minHeight: 280,
-        minWidth: width,
-        width: width,
-        ...(container !== 'inline' ? {
-          right: 0,
-          bottom: 0,
-          margin: 'auto',
-        } : {}),
-      },
-    };
     let newAnchorEl = this.state.anchorEl;
     if (this.state.edit === 'start') {
       newAnchorEl = (this.state.displayTime ? allRefs.startTime : allRefs.startDate);
     } else {
       newAnchorEl = (this.state.displayTime ? allRefs.endTime : allRefs.endDate);
     }
-    const Container = (container === 'inline' ? Popover : Dialog);
-    return (
-      <div {...other} ref="root">
-        <Container
-          anchorEl={newAnchorEl || this.refs.root} // For Popover
-          animation={animation || PopoverAnimationVertical} // For Popover
-          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}} // For Popover
-          targetOrigin={{horizontal: 'left', vertical: 'top'}} // For Popover
-          canAutoPosition={false} // For Popover
-          bodyStyle={styles.dialogBodyContent}
-          contentStyle={styles.dialogContent}
-          ref="dialog"
-          repositionOnUpdate={true}
-          open={open}
-          onRequestClose={this.handleRequestClose}
-          style={Object.assign(styles.dialogBodyContent, containerStyle)}
-        >
-          <EventListener
-            target="window"
-            onKeyUp={this.handleWindowKeyUp}
-          />
 
-          {showCalendarDate &&
-            <DateRangeDisplay
-              DateTimeFormat={DateTimeFormat}
-              disableYearSelection={true}
-              displayTime={this.state.displayTime}
-              onTouchTapMonthDay={this.handleTouchTapDateDisplayMonthDay}
-              onTouchTapYear={this.handleTouchTapDateDisplayYear}
-              onTouchTapMenu={this.handleTouchTapMenu.bind(this)}
-              locale={locale}
-              monthDaySelected={true}
-              mode={this.props.mode}
-              end={this.state.end}
-              edit={this.state.edit}
-              start={this.state.start}
-            />
-          }
+    const content = (
+      <span>
+        <EventListener
+          target="window"
+          onKeyUp={this.handleWindowKeyUp}
+        />
 
-          {showCalendarStatus &&
-            <DateRangeStatusDisplay
-              displayTime={this.state.displayTime}
-              edit={this.state.edit}
-              endLabel={endLabel}
-              mode={this.props.mode}
-              startLabel={startLabel}
-            />
-          }
-
-          <RangeCalendar
-            autoOk={autoOk}
-            blockedDateTimeRanges={blockedDateTimeRanges}
+        {showCalendarDate &&
+          <DateRangeDisplay
             DateTimeFormat={DateTimeFormat}
-            calendarDateWidth={calendarDateWidth}
-            calendarTimeWidth={calendarTimeWidth}
-            cancelLabel={cancelLabel}
             disableYearSelection={true}
             displayTime={this.state.displayTime}
-            dayButtonSize={dayButtonSize}
-            firstDayOfWeek={firstDayOfWeek}
+            onTouchTapMonthDay={this.handleTouchTapDateDisplayMonthDay}
+            onTouchTapYear={this.handleTouchTapDateDisplayYear}
+            onTouchTapMenu={this.handleTouchTapMenu.bind(this)}
             locale={locale}
-            onTouchTapDay={this.handleTouchTapDay.bind(this)}
-            onTouchTapHour={this.handleTouchTapHour.bind(this)}
-            mode={mode}
-            open={open}
-            ref="startCalendar"
-            onTouchTapCancel={this.handleTouchTapCancel}
-            onTouchTapOk={this.handleTouchTapOk}
-            okLabel={okLabel}
-            openToYearSelection={false}
-            edit={this.state.edit}
+            monthDaySelected={true}
+            mode={this.props.mode}
             end={this.state.end}
+            edit={this.state.edit}
             start={this.state.start}
-            setSelectedDate={this.setSelectedDate.bind(this)}
-            onMonthChange={this.handleMonthChange}
-            utils={utils}
           />
+        }
 
+        {showCalendarStatus &&
+          <DateRangeStatusDisplay
+            displayTime={this.state.displayTime}
+            edit={this.state.edit}
+            endLabel={endLabel}
+            mode={this.props.mode}
+            startLabel={startLabel}
+          />
+        }
 
-        </Container>
+        <RangeCalendar
+          autoOk={autoOk}
+          blockedDateTimeRanges={blockedDateTimeRanges}
+          DateTimeFormat={DateTimeFormat}
+          calendarDateWidth={calendarDateWidth}
+          calendarTimeWidth={calendarTimeWidth}
+          cancelLabel={cancelLabel}
+          disableYearSelection={true}
+          displayTime={this.state.displayTime}
+          dayButtonSize={dayButtonSize}
+          firstDayOfWeek={firstDayOfWeek}
+          locale={locale}
+          onTouchTapDay={this.handleTouchTapDay.bind(this)}
+          onTouchTapHour={this.handleTouchTapHour.bind(this)}
+          mode={mode}
+          open={open}
+          ref="startCalendar"
+          onTouchTapCancel={this.handleTouchTapCancel}
+          onTouchTapOk={this.handleTouchTapOk}
+          okLabel={okLabel}
+          openToYearSelection={false}
+          edit={this.state.edit}
+          end={this.state.end}
+          start={this.state.start}
+          setSelectedDate={this.setSelectedDate.bind(this)}
+          onMonthChange={this.handleMonthChange}
+          utils={utils}
+        />
+      </span>
+    );
+
+    return (
+      <div {...other} ref="root">
+        {container === 'inline' ?
+          <Popover
+            action={this.popover}
+            anchorEl={newAnchorEl || this.refs.root}
+            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+            transformOrigin={{horizontal: 'left', vertical: 'top'}}
+            ref="dialog"
+            open={open}
+            onClose={this.handleRequestClose}
+          >
+            {content}
+          </Popover> :
+          <Dialog
+            ref="dialog"
+            open={open}
+            onClose={this.handleRequestClose}
+          >
+            {content}
+          </Dialog>
+        }
       </div>
     );
   }

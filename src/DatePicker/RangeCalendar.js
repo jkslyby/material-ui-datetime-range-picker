@@ -110,8 +110,6 @@ class RangeCalendar extends Component {
 
   handleWindowKeyDown = (event) => {
     if (this.props.open) {
-      const nextArrow = this.context.muiTheme.isRtl ? 'left' : 'right';
-      const prevArrow = this.context.muiTheme.isRtl ? 'right' : 'left';
       switch (keycode(event)) {
         case 'up':
           if (event.altKey && event.shiftKey) {
@@ -133,7 +131,7 @@ class RangeCalendar extends Component {
           }
           break;
 
-        case nextArrow:
+        case 'right':
           if (event.altKey && event.shiftKey) {
             this.addSelectedYears(1);
           } else if (event.shiftKey) {
@@ -143,7 +141,7 @@ class RangeCalendar extends Component {
           }
           break;
 
-        case prevArrow:
+        case 'left':
           if (event.altKey && event.shiftKey) {
             this.addSelectedYears(-1);
           } else if (event.shiftKey) {
