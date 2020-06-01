@@ -40,8 +40,8 @@ This is still a work in progress so use it at your own risk. I've added some bas
       mode='portrait'
       startLabel='Beginning'
       endLabel='Ending'
+  />
 </MuiThemeProvider>
-/>
 ```
 
 ### Options:
